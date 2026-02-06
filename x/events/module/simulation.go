@@ -1,9 +1,13 @@
 package events
 
 import (
+	"math/rand"
+
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/cosmos/cosmos-sdk/x/simulation"
 
+	eventssimulation "bettery/x/events/simulation"
 	"bettery/x/events/types"
 )
 
@@ -25,6 +29,22 @@ func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+	const (
+		opWeightMsgCreateEvent          = "op_weight_msg_events"
+		defaultWeightMsgCreateEvent int = 100
+	)
+
+	var weightMsgCreateEvent int
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateEvent, &weightMsgCreateEvent, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateEvent = defaultWeightMsgCreateEvent
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateEvent,
+		eventssimulation.SimulateMsgCreateEvent(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
+	))
+
 	return operations
 }
 
