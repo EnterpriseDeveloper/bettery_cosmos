@@ -1,6 +1,10 @@
 package app
 
 import (
+	_ "bettery/x/events/module"
+	eventsmoduletypes "bettery/x/events/types"
+	_ "bettery/x/funds/module"
+	fundsmoduletypes "bettery/x/funds/types"
 	"time"
 
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
@@ -81,7 +85,7 @@ var (
 		{Account: nft.ModuleName},
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: icatypes.ModuleName},
-	}
+		{Account: fundsmoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner, authtypes.Staking}}, {Account: eventsmoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner, authtypes.Staking}}}
 
 	// blocked account addresses
 	blockAccAddrs = []string{
@@ -123,6 +127,8 @@ var (
 						// ibc modules
 						ibcexported.ModuleName,
 						// chain modules
+						fundsmoduletypes.ModuleName,
+						eventsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/beginBlockers
 					},
 					EndBlockers: []string{
@@ -131,6 +137,8 @@ var (
 						feegrant.ModuleName,
 						group.ModuleName,
 						// chain modules
+						fundsmoduletypes.ModuleName,
+						eventsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/endBlockers
 					},
 					// The following is mostly only needed when ModuleName != StoreKey name.
@@ -167,6 +175,8 @@ var (
 						ibctransfertypes.ModuleName,
 						icatypes.ModuleName,
 						// chain modules
+						fundsmoduletypes.ModuleName,
+						eventsmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/initGenesis
 					},
 				}),
@@ -262,6 +272,14 @@ var (
 			{
 				Name:   epochstypes.ModuleName,
 				Config: appconfig.WrapAny(&epochsmodulev1.Module{}),
+			},
+			{
+				Name:   fundsmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&fundsmoduletypes.Module{}),
+			},
+			{
+				Name:   eventsmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&eventsmoduletypes.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

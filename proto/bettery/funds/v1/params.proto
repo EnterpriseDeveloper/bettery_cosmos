@@ -1,0 +1,13 @@
+syntax = "proto3";
+package bettery.funds.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "bettery/x/funds/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "bettery/x/funds/Params";
+  option (gogoproto.equal) = true;
+}

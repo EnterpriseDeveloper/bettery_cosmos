@@ -46,6 +46,8 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 
 	"bettery/docs"
+	eventsmodulekeeper "bettery/x/events/keeper"
+	fundsmodulekeeper "bettery/x/funds/keeper"
 )
 
 const (
@@ -98,7 +100,9 @@ type App struct {
 	TransferKeeper      ibctransferkeeper.Keeper
 
 	// simulation manager
-	sm *module.SimulationManager
+	sm           *module.SimulationManager
+	FundsKeeper  fundsmodulekeeper.Keeper
+	EventsKeeper eventsmodulekeeper.Keeper
 }
 
 func init() {
@@ -171,6 +175,8 @@ func New(
 		&app.ConsensusParamsKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.ParamsKeeper,
+		&app.FundsKeeper,
+		&app.EventsKeeper,
 	); err != nil {
 		panic(err)
 	}

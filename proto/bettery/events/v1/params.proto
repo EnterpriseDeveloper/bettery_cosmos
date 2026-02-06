@@ -1,0 +1,13 @@
+syntax = "proto3";
+package bettery.events.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "bettery/x/events/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "bettery/x/events/Params";
+  option (gogoproto.equal) = true;
+}

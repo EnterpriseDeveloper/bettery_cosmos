@@ -1,0 +1,126 @@
+services:
+  init:
+    container_name: bettery-init
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - shared-genesis:/shared
+      - node0-data:/node0
+      - node1-data:/node1
+      - node2-data:/node2
+      - node3-data:/node3
+      - node4-data:/node4
+    environment:
+      - CHAIN_ID=bettery-testnet
+    entrypoint: ["/bin/sh"]
+    command: ["/usr/local/bin/init.sh"]
+    restart: "no"
+
+  betterynode0:
+    container_name: betterynode0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "26656:26656"
+      - "26657:26657"
+      - "1317:1317"
+      - "9090:9090"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - shared-genesis:/shared:Z
+      - node0-data:/data:Z
+    environment:
+      - CHAIN_ID=bettery-testnet
+      - DAEMON_HOME=/data
+      - DAEMON_NAME=betteryd
+      - DAEMON_RESTART_AFTER_UPGRADE=true
+    entrypoint: ["/bin/sh", "-c"]
+    command: [/usr/local/bin/runFirstNode.sh ]
+
+  betterynode1:
+    container_name: betterynode1
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - shared-genesis:/shared:Z
+      - node1-data:/data:Z
+    environment:
+      - CHAIN_ID=bettery-testnet
+      - DAEMON_HOME=/data
+      - DAEMON_NAME=betteryd
+      - DAEMON_RESTART_AFTER_UPGRADE=true
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["/usr/local/bin/runNode.sh"]
+
+  betterynode2:
+    container_name: betterynode2
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - shared-genesis:/shared:Z
+      - node2-data:/data:Z
+    environment:
+      - CHAIN_ID=bettery-testnet
+      - DAEMON_HOME=/data
+      - DAEMON_NAME=betteryd
+      - DAEMON_RESTART_AFTER_UPGRADE=true
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["/usr/local/bin/runNode.sh"]
+
+  betterynode3:
+    container_name: betterynode3
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - shared-genesis:/shared:Z
+      - node3-data:/data:Z
+    environment:
+      - CHAIN_ID=bettery-testnet
+      - DAEMON_HOME=/data
+      - DAEMON_NAME=betteryd
+      - DAEMON_RESTART_AFTER_UPGRADE=true
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["/usr/local/bin/runNode.sh"]
+
+  betterynode4:
+    container_name: betterynode4
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - shared-genesis:/shared:Z
+      - node4-data:/data:Z
+    environment:
+      - CHAIN_ID=bettery-testnet
+      - DAEMON_HOME=/data
+      - DAEMON_NAME=betteryd
+      - DAEMON_RESTART_AFTER_UPGRADE=true
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["/usr/local/bin/runNode.sh"]
+
+volumes:
+  shared-genesis:
+  node0-data:
+  node1-data:
+  node2-data:
+  node3-data:
+  node4-data:
