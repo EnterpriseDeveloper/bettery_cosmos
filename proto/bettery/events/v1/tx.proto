@@ -23,6 +23,9 @@ service Msg {
 
   // CreatePartEvent defines the CreatePartEvent RPC.
   rpc CreatePartEvent(MsgCreatePartEvent) returns (MsgCreatePartEventResponse);
+
+  // ValidateEvent defines the ValidateEvent RPC.
+  rpc ValidateEvent(MsgValidateEvent) returns (MsgValidateEventResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -75,3 +78,17 @@ message MsgCreatePartEvent {
 
 // MsgCreatePartEventResponse defines the MsgCreatePartEventResponse message.
 message MsgCreatePartEventResponse {}
+
+// MsgValidateEvent defines the MsgValidateEvent message.
+message MsgValidateEvent {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 id = 2;
+  uint64 event_id = 3;
+  uint64 answer_index = 4;
+  string answers = 5;
+  string source = 6;
+}
+
+// MsgValidateEventResponse defines the MsgValidateEventResponse message.
+message MsgValidateEventResponse {}

@@ -40,6 +40,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a create-part-event tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "amount"}, {ProtoField: "answer_index"}, {ProtoField: "token"}},
 				},
+				{
+					RpcMethod:      "ValidateEvent",
+					Use:            "validate-event [id] [event-id] [answer-index] [answers] [source]",
+					Short:          "Send a validate-event tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "event_id"}, {ProtoField: "answer_index"}, {ProtoField: "answers"}, {ProtoField: "source"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

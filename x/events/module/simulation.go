@@ -59,6 +59,21 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgCreatePartEvent,
 		eventssimulation.SimulateMsgCreatePartEvent(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
 	))
+	const (
+		opWeightMsgValidateEvent          = "op_weight_msg_events"
+		defaultWeightMsgValidateEvent int = 100
+	)
+
+	var weightMsgValidateEvent int
+	simState.AppParams.GetOrGenerate(opWeightMsgValidateEvent, &weightMsgValidateEvent, nil,
+		func(_ *rand.Rand) {
+			weightMsgValidateEvent = defaultWeightMsgValidateEvent
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgValidateEvent,
+		eventssimulation.SimulateMsgValidateEvent(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
+	))
 
 	return operations
 }
