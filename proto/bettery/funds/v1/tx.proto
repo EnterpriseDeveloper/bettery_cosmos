@@ -53,4 +53,6 @@ message MsgMintToken {
 }
 
 // MsgMintTokenResponse defines the MsgMintTokenResponse message.
-message MsgMintTokenResponse {}
+message MsgMintTokenResponse {
+     string status = 1;
+}

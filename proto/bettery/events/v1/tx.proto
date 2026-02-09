@@ -91,4 +91,5 @@ message MsgValidateEvent {
 }
 
 // MsgValidateEventResponse defines the MsgValidateEventResponse message.
-message MsgValidateEventResponse {}
+message MsgValidateEventResponse {
+}
