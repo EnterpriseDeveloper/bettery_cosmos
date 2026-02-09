@@ -28,14 +28,18 @@ export interface MsgUpdateParamsResponse {
 /** MsgMintToken defines the MsgMintToken message. */
 export interface MsgMintToken {
   creator: string;
-  receiver: string;
-  amount: string;
-  symbol: string;
 }
 
 /** MsgMintTokenResponse defines the MsgMintTokenResponse message. */
 export interface MsgMintTokenResponse {
   status: string;
+}
+
+export interface MintEvent {
+  creator: string;
+  amount: string;
+  token: string;
+  time: number;
 }
 
 function createBaseMsgUpdateParams(): MsgUpdateParams {
@@ -160,22 +164,13 @@ export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
 };
 
 function createBaseMsgMintToken(): MsgMintToken {
-  return { creator: "", receiver: "", amount: "", symbol: "" };
+  return { creator: "" };
 }
 
 export const MsgMintToken: MessageFns<MsgMintToken> = {
   encode(message: MsgMintToken, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
-    }
-    if (message.receiver !== "") {
-      writer.uint32(18).string(message.receiver);
-    }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
-    }
-    if (message.symbol !== "") {
-      writer.uint32(34).string(message.symbol);
     }
     return writer;
   },
@@ -195,30 +190,6 @@ export const MsgMintToken: MessageFns<MsgMintToken> = {
           message.creator = reader.string();
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.receiver = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.amount = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.symbol = reader.string();
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -229,27 +200,13 @@ export const MsgMintToken: MessageFns<MsgMintToken> = {
   },
 
   fromJSON(object: any): MsgMintToken {
-    return {
-      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
-      receiver: isSet(object.receiver) ? globalThis.String(object.receiver) : "",
-      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
-      symbol: isSet(object.symbol) ? globalThis.String(object.symbol) : "",
-    };
+    return { creator: isSet(object.creator) ? globalThis.String(object.creator) : "" };
   },
 
   toJSON(message: MsgMintToken): unknown {
     const obj: any = {};
     if (message.creator !== "") {
       obj.creator = message.creator;
-    }
-    if (message.receiver !== "") {
-      obj.receiver = message.receiver;
-    }
-    if (message.amount !== "") {
-      obj.amount = message.amount;
-    }
-    if (message.symbol !== "") {
-      obj.symbol = message.symbol;
     }
     return obj;
   },
@@ -260,9 +217,6 @@ export const MsgMintToken: MessageFns<MsgMintToken> = {
   fromPartial<I extends Exact<DeepPartial<MsgMintToken>, I>>(object: I): MsgMintToken {
     const message = createBaseMsgMintToken();
     message.creator = object.creator ?? "";
-    message.receiver = object.receiver ?? "";
-    message.amount = object.amount ?? "";
-    message.symbol = object.symbol ?? "";
     return message;
   },
 };
@@ -325,6 +279,114 @@ export const MsgMintTokenResponse: MessageFns<MsgMintTokenResponse> = {
   },
 };
 
+function createBaseMintEvent(): MintEvent {
+  return { creator: "", amount: "", token: "", time: 0 };
+}
+
+export const MintEvent: MessageFns<MintEvent> = {
+  encode(message: MintEvent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    if (message.token !== "") {
+      writer.uint32(26).string(message.token);
+    }
+    if (message.time !== 0) {
+      writer.uint32(32).uint64(message.time);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MintEvent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMintEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.token = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.time = longToNumber(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MintEvent {
+    return {
+      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+      token: isSet(object.token) ? globalThis.String(object.token) : "",
+      time: isSet(object.time) ? globalThis.Number(object.time) : 0,
+    };
+  },
+
+  toJSON(message: MintEvent): unknown {
+    const obj: any = {};
+    if (message.creator !== "") {
+      obj.creator = message.creator;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    if (message.token !== "") {
+      obj.token = message.token;
+    }
+    if (message.time !== 0) {
+      obj.time = Math.round(message.time);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MintEvent>, I>>(base?: I): MintEvent {
+    return MintEvent.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MintEvent>, I>>(object: I): MintEvent {
+    const message = createBaseMintEvent();
+    message.creator = object.creator ?? "";
+    message.amount = object.amount ?? "";
+    message.token = object.token ?? "";
+    message.time = object.time ?? 0;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /**
@@ -374,6 +436,17 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(int64: { toString(): string }): number {
+  const num = globalThis.Number(int64.toString());
+  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return num;
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

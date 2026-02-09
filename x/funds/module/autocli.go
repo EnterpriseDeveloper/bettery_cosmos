@@ -30,9 +30,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "MintToken",
-					Use:            "mint-token [receiver] [amount] [symbol]",
+					Use:            "mint-token",
 					Short:          "Send a mint-token tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "receiver"}, {ProtoField: "amount"}, {ProtoField: "symbol"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},

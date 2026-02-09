@@ -26,7 +26,7 @@ func (k msgServer) MintToken(ctx context.Context, msg *types.MsgMintToken) (*typ
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, fmt.Sprintf("User already minted tokens"))
 	}
 
-	receiver, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func (k msgServer) MintToken(ctx context.Context, msg *types.MsgMintToken) (*typ
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("parse string to init error, amount: %s, user: %s", types.Amount, msg.Creator))
 	}
 
-	err = k.MintTokens(ctx, receiver, sdk.NewCoin(types.BetToken, amount))
+	err = k.MintTokens(ctx, creator, sdk.NewCoin(types.BetToken, amount))
 	if err != nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("error from burn mint, amount: %s, user: %s", types.Amount, msg.Creator))
 	}
