@@ -8,7 +8,7 @@ managed:
   enabled: true
 plugins:
   - remote: buf.build/community/stephenh-ts-proto
-    out: ./proto-ts
+    out: /Users/voroshilovmax/Development/nextjs/bettery/tx/proto-ts
     opt:
       - logtostderr=true
       - allow_merge=true
