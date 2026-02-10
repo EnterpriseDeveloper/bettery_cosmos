@@ -7,7 +7,7 @@ set -e
 set -x
 
 CHAIN_ID=bettery-testnet
-STAKE=stake
+STAKE=ubet
 
 # 1. Init all nodes
 for i in 0 1 2 3 4; do

@@ -14,7 +14,7 @@ const (
 	// See: https://github.com/cosmos/cosmos-sdk/blob/v0.52.0-beta.2/x/gov/types/keys.go#L9
 	GovModuleName = "gov"
 	BetToken      = "ubet"
-	Amount        = "1000000"
+	Amount        = "10000000"
 )
 
 // ParamsKey is the prefix to retrieve all Params
