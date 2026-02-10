@@ -30,6 +30,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
@@ -211,6 +212,17 @@ func New(
 		if err := app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap()); err != nil {
 			return nil, err
 		}
+		app.BankKeeper.SetDenomMetaData(ctx, banktypes.Metadata{
+			Name:        "Bettery Token",
+			Symbol:      "BET",
+			Base:        "ubet",
+			Display:     "BET",
+			Description: "Token for betting protocol",
+			DenomUnits: []*banktypes.DenomUnit{
+				{Denom: "ubet", Exponent: 0},
+				{Denom: "BET", Exponent: 6},
+			},
+		})
 		return app.App.InitChainer(ctx, req)
 	})
 

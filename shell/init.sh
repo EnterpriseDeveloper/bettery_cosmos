@@ -6,7 +6,7 @@ exec > "$LOG_FILE" 2>&1
 set -e
 set -x
 
-CHAIN_ID=bettery-testnet
+CHAIN_ID=bettery-1
 STAKE=ubet
 
 # 1. Init all nodes
