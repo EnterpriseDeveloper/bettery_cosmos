@@ -3,13 +3,12 @@ package keeper
 import (
 	"bettery/x/events/types"
 	"context"
-	"encoding/binary"
 )
 
 func (k Keeper) AppendCreatePubEvents(
 	ctx context.Context,
 	createPubEvents types.MsgCreateEvent,
-) uint64 {
+) string {
 	store := k.storeService.OpenKVStore(ctx)
 	appendedValue := k.cdc.MustMarshal(&createPubEvents)
 	store.Set(GetCreatePubEventsIDBytes(createPubEvents.Id), appendedValue)
@@ -17,7 +16,7 @@ func (k Keeper) AppendCreatePubEvents(
 	return createPubEvents.Id
 }
 
-func (k Keeper) HasCreatePubEvents(ctx context.Context, id uint64) bool {
+func (k Keeper) HasCreatePubEvents(ctx context.Context, id string) bool {
 	store := k.storeService.OpenKVStore(ctx)
 	data, err := store.Has(GetCreatePubEventsIDBytes(id))
 	if err != nil {
@@ -27,8 +26,6 @@ func (k Keeper) HasCreatePubEvents(ctx context.Context, id uint64) bool {
 }
 
 // GetCreatePubEventsIDBytes returns the byte representation of the ID
-func GetCreatePubEventsIDBytes(id uint64) []byte {
-	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, id)
-	return bz
+func GetCreatePubEventsIDBytes(id string) []byte {
+	return []byte(id)
 }

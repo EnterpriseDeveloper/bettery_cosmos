@@ -19,13 +19,12 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 	}
 
 	var createPubEvents = types.MsgCreateEvent{
-		Creator:   msg.Creator,
-		Id:        msg.Id,
-		Question:  msg.Question,
-		Answers:   msg.Answers,
-		StartTime: msg.StartTime,
-		EndTime:   msg.EndTime,
-		Category:  msg.Category,
+		Creator:  msg.Creator,
+		Id:       msg.Id,
+		Question: msg.Question,
+		Answers:  msg.Answers,
+		EndTime:  msg.EndTime,
+		Category: msg.Category,
 	}
 
 	// check if event exist
@@ -36,16 +35,8 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	timeNow := sdkCtx.BlockTime().Unix()
-	if createPubEvents.StartTime < uint64(timeNow) {
-		return nil, status.Error(codes.InvalidArgument, "start time must be in the future")
-	}
-
 	if createPubEvents.EndTime < uint64(timeNow) {
 		return nil, status.Error(codes.InvalidArgument, "end time must be in the future")
-	}
-
-	if createPubEvents.EndTime < createPubEvents.StartTime {
-		return nil, status.Error(codes.InvalidArgument, "end time must be greater than start time")
 	}
 
 	id := k.AppendCreatePubEvents(

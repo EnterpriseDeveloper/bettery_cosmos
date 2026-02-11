@@ -32,7 +32,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod:      "CreateEvent",
 					Use:            "create-event [id] [question] [answers] [start-time] [end-time] [category]",
 					Short:          "Send a create-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "question"}, {ProtoField: "answers"}, {ProtoField: "start_time"}, {ProtoField: "end_time"}, {ProtoField: "category"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "question"}, {ProtoField: "answers"}, {ProtoField: "end_time"}, {ProtoField: "category"}},
 				},
 				{
 					RpcMethod:      "CreatePartEvent",

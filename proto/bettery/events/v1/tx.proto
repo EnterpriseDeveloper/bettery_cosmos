@@ -53,17 +53,16 @@ message MsgUpdateParamsResponse {}
 message MsgCreateEvent {
   option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  uint64 id = 2;
+  string id = 2;
   string question = 3;
   repeated string answers = 4;
-  uint64 start_time = 5;
   uint64 end_time = 6;
   string category = 7;
 }
 
 // MsgCreateEventResponse defines the MsgCreateEventResponse message.
 message MsgCreateEventResponse {
-  uint64 id = 1;
+  string id = 1;
 }
 
 // MsgCreatePartEvent defines the MsgCreatePartEvent message.
