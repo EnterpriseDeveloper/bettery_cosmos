@@ -27,6 +27,12 @@ var (
 	EventsCountKey  = collections.NewPrefix("events/count/")
 )
 
+var (
+	ActiveEvent   = "ACTIVE"
+	FinishedEvent = "FINISHED"
+	RefundEvent   = "REFUND"
+)
+
 func EventKey(id uint64) []byte {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, id)

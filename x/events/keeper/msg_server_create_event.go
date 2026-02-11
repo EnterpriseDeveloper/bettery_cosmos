@@ -27,7 +27,7 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		StartTime: uint64(timeNow),
 		EndTime:   msg.EndTime,
 		Category:  msg.Category,
-		Status:    "ACTIVE",
+		Status:    types.ActiveEvent,
 	}
 
 	if createEvent.EndTime < uint64(timeNow) {

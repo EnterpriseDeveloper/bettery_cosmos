@@ -20,7 +20,7 @@ func (k Keeper) AppendEvent(
 	return event.Id
 }
 
-func (k Keeper) HasCreatePubEvents(ctx context.Context, id uint64) bool {
+func (k Keeper) HasCreateEvents(ctx context.Context, id uint64) bool {
 	store := k.storeService.OpenKVStore(ctx)
 	data, err := store.Has(types.EventKey(id))
 	if err != nil {
@@ -47,4 +47,21 @@ func (k Keeper) GetEventCount(ctx context.Context) uint64 {
 	}
 
 	return binary.BigEndian.Uint64(bz)
+}
+
+// check if event finished
+func (k Keeper) GetEventFinished(ctx context.Context, id uint64) bool {
+	event := k.GetEventById(ctx, id).Status
+	return event == types.FinishedEvent || event == types.RefundEvent
+}
+
+func (k Keeper) GetEventById(ctx context.Context, id uint64) types.Events {
+	store := k.storeService.OpenKVStore(ctx)
+	var event types.Events
+	data, err := store.Get(types.EventKey(id))
+	if err != nil {
+		panic(err)
+	}
+	k.cdc.MustUnmarshal(data, &event)
+	return event
 }
