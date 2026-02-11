@@ -52,7 +52,7 @@ func NewKeeper(
 		mintKeeper: mintKeeper,
 		bankKeeper: bankKeeper,
 		Params:     collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		Events:     collections.NewMap(sb, types.EventsKey, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
+		Events:     collections.NewMap(sb, types.EventsKeyPrefix, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
 		EventsSeq:  collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
 	}
 	schema, err := sb.Build()

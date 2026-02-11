@@ -14,7 +14,7 @@ func (k Keeper) AppendEvent(
 	id := k.GetEventCount(ctx)
 	event.Id = id
 	appendedValue := k.cdc.MustMarshal(&event)
-	store.Set(GetEventByIDBytes(event.Id), appendedValue)
+	store.Set(types.EventKey(event.Id), appendedValue)
 	k.SetEventCount(ctx, id+1)
 
 	return event.Id
@@ -22,18 +22,11 @@ func (k Keeper) AppendEvent(
 
 func (k Keeper) HasCreatePubEvents(ctx context.Context, id uint64) bool {
 	store := k.storeService.OpenKVStore(ctx)
-	data, err := store.Has(GetEventByIDBytes(id))
+	data, err := store.Has(types.EventKey(id))
 	if err != nil {
 		panic(err)
 	}
 	return data
-}
-
-// GetEventByIDBytes returns the byte representation of the ID
-func GetEventByIDBytes(id uint64) []byte {
-	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, id)
-	return bz
 }
 
 func (k Keeper) SetEventCount(ctx context.Context, count uint64) {

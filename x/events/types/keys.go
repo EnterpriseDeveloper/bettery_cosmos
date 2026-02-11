@@ -1,6 +1,10 @@
 package types
 
-import "cosmossdk.io/collections"
+import (
+	"encoding/binary"
+
+	"cosmossdk.io/collections"
+)
 
 const (
 	// ModuleName defines the module name
@@ -19,6 +23,12 @@ const (
 var ParamsKey = collections.NewPrefix("p_events")
 
 var (
-	EventsKey      = collections.NewPrefix("events/value/")
-	EventsCountKey = collections.NewPrefix("events/count/")
+	EventsKeyPrefix = collections.NewPrefix("events/value/")
+	EventsCountKey  = collections.NewPrefix("events/count/")
 )
+
+func EventKey(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return append(EventsKeyPrefix, bz...)
+}

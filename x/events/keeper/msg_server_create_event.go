@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"bettery/x/events/types"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -29,11 +28,6 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		EndTime:   msg.EndTime,
 		Category:  msg.Category,
 		Status:    "ACTIVE",
-	}
-
-	// check if event exist
-	if k.HasCreatePubEvents(ctx, createEvent.Id) {
-		return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("event by id %d alredy exist", createEvent.Id))
 	}
 
 	if createEvent.EndTime < uint64(timeNow) {
