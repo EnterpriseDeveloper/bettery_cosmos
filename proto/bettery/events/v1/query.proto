@@ -5,6 +5,7 @@ package bettery.events.v1;
 import "amino/amino.proto";
 import "bettery/events/v1/events.proto";
 import "bettery/events/v1/params.proto";
+import "bettery/events/v1/participant.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -26,6 +27,16 @@ service Query {
   // ListEvents defines the ListEvents RPC.
   rpc ListEvents(QueryAllEventsRequest) returns (QueryAllEventsResponse) {
     option (google.api.http).get = "/bettery/events/v1/events";
+  }
+
+  // ListParticipant Queries a list of Participant items.
+  rpc GetParticipant(QueryGetParticipantRequest) returns (QueryGetParticipantResponse) {
+    option (google.api.http).get = "/bettery/events/v1/participant/{id}";
+  }
+
+  // ListParticipant defines the ListParticipant RPC.
+  rpc ListParticipant(QueryAllParticipantRequest) returns (QueryAllParticipantResponse) {
+    option (google.api.http).get = "/bettery/events/v1/participant";
   }
 }
 
@@ -59,5 +70,26 @@ message QueryAllEventsRequest {
 // QueryAllEventsResponse defines the QueryAllEventsResponse message.
 message QueryAllEventsResponse {
   repeated Events events = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryGetParticipantRequest defines the QueryGetParticipantRequest message.
+message QueryGetParticipantRequest {
+  uint64 id = 1;
+}
+
+// QueryGetParticipantResponse defines the QueryGetParticipantResponse message.
+message QueryGetParticipantResponse {
+  Participant participant = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllParticipantRequest defines the QueryAllParticipantRequest message.
+message QueryAllParticipantRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryAllParticipantResponse defines the QueryAllParticipantResponse message.
+message QueryAllParticipantResponse {
+  repeated Participant participant = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

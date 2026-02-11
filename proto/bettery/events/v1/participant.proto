@@ -1,0 +1,14 @@
+syntax = "proto3";
+package bettery.events.v1;
+
+option go_package = "bettery/x/events/types";
+
+// Participant defines the Participant message.
+message Participant {
+  uint64 id = 1;
+  uint64 event_id = 2;
+  string answer = 3;
+  uint64 amount = 4;
+  string token = 5;
+  uint64 result = 6;
+}

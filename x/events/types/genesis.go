@@ -6,7 +6,7 @@ import "fmt"
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Params:     DefaultParams(),
-		EventsList: []Events{}}
+		EventsList: []Events{}, ParticipantList: []Participant{}}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
@@ -22,6 +22,17 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("events id should be lower or equal than the last id")
 		}
 		eventsIdMap[elem.Id] = true
+	}
+	participantIdMap := make(map[uint64]bool)
+	participantCount := gs.GetParticipantCount()
+	for _, elem := range gs.ParticipantList {
+		if _, ok := participantIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for participant")
+		}
+		if elem.Id >= participantCount {
+			return fmt.Errorf("participant id should be lower or equal than the last id")
+		}
+		participantIdMap[elem.Id] = true
 	}
 
 	return gs.Params.Validate()

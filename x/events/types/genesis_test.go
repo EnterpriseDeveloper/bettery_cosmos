@@ -21,7 +21,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		},
 		{
 			desc:     "valid genesis state",
-			genState: &types.GenesisState{EventsList: []types.Events{{Id: 0}, {Id: 1}}, EventsCount: 2}, valid: true,
+			genState: &types.GenesisState{EventsList: []types.Events{{Id: 0}, {Id: 1}}, EventsCount: 2, ParticipantList: []types.Participant{{Id: 0}, {Id: 1}}, ParticipantCount: 2}, valid: true,
 		}, {
 			desc: "duplicated events",
 			genState: &types.GenesisState{
@@ -33,8 +33,8 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: 0,
 					},
 				},
-			},
-			valid: false,
+				ParticipantList: []types.Participant{{Id: 0}, {Id: 1}}, ParticipantCount: 2,
+			}, valid: false,
 		}, {
 			desc: "invalid events count",
 			genState: &types.GenesisState{
@@ -43,7 +43,31 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: 1,
 					},
 				},
-				EventsCount: 0,
+				EventsCount:     0,
+				ParticipantList: []types.Participant{{Id: 0}, {Id: 1}}, ParticipantCount: 2,
+			}, valid: false,
+		}, {
+			desc: "duplicated participant",
+			genState: &types.GenesisState{
+				ParticipantList: []types.Participant{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		}, {
+			desc: "invalid participant count",
+			genState: &types.GenesisState{
+				ParticipantList: []types.Participant{
+					{
+						Id: 1,
+					},
+				},
+				ParticipantCount: 0,
 			},
 			valid: false,
 		},

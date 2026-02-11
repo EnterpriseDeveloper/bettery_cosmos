@@ -22,10 +22,12 @@ type Keeper struct {
 	Schema collections.Schema
 	Params collections.Item[types.Params]
 
-	mintKeeper types.MintKeeper
-	bankKeeper types.BankKeeper
-	EventsSeq  collections.Sequence
-	Events     collections.Map[uint64, types.Events]
+	mintKeeper     types.MintKeeper
+	bankKeeper     types.BankKeeper
+	EventsSeq      collections.Sequence
+	Events         collections.Map[uint64, types.Events]
+	ParticipantSeq collections.Sequence
+	Participant    collections.Map[uint64, types.Participant]
 }
 
 func NewKeeper(
@@ -49,11 +51,13 @@ func NewKeeper(
 		addressCodec: addressCodec,
 		authority:    authority,
 
-		mintKeeper: mintKeeper,
-		bankKeeper: bankKeeper,
-		Params:     collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		Events:     collections.NewMap(sb, types.EventsKeyPrefix, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
-		EventsSeq:  collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
+		mintKeeper:     mintKeeper,
+		bankKeeper:     bankKeeper,
+		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		Events:         collections.NewMap(sb, types.EventsKeyPrefix, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
+		EventsSeq:      collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
+		Participant:    collections.NewMap(sb, types.ParticipantKey, "participant", collections.Uint64Key, codec.CollValue[types.Participant](cdc)),
+		ParticipantSeq: collections.NewSequence(sb, types.ParticipantCountKey, "participantSequence"),
 	}
 	schema, err := sb.Build()
 	if err != nil {

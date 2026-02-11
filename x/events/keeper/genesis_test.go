@@ -10,9 +10,11 @@ import (
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
-		Params:      types.DefaultParams(),
-		EventsList:  []types.Events{{Id: 0}, {Id: 1}},
-		EventsCount: 2,
+		Params:           types.DefaultParams(),
+		EventsList:       []types.Events{{Id: 0}, {Id: 1}},
+		EventsCount:      2,
+		ParticipantList:  []types.Participant{{Id: 0}, {Id: 1}},
+		ParticipantCount: 2,
 	}
 	f := initFixture(t)
 	err := f.keeper.InitGenesis(f.ctx, genesisState)
@@ -24,5 +26,7 @@ func TestGenesis(t *testing.T) {
 	require.EqualExportedValues(t, genesisState.Params, got.Params)
 	require.EqualExportedValues(t, genesisState.EventsList, got.EventsList)
 	require.Equal(t, genesisState.EventsCount, got.EventsCount)
+	require.EqualExportedValues(t, genesisState.ParticipantList, got.ParticipantList)
+	require.Equal(t, genesisState.ParticipantCount, got.ParticipantCount)
 
 }
