@@ -47,6 +47,7 @@ message MsgUpdateParamsResponse {}
 message MsgMintToken {
   option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string receiver = 2;
 }
 
 // MsgMintTokenResponse defines the MsgMintTokenResponse message.
@@ -56,7 +57,8 @@ message MsgMintTokenResponse {
 
 message MintEvent {
   string creator = 1;
-  string amount  = 2;
-  string token   = 3;
-  uint64 time    = 4;
+  string receiver = 2;
+  string amount  = 3;
+  string token   = 4;
+  uint64 time    = 5;
 }

@@ -5,9 +5,9 @@ import (
 	"context"
 )
 
-func (k Keeper) HasMint(ctx context.Context, creator string) (bool, error) {
+func (k Keeper) HasMint(ctx context.Context, receiver string) (bool, error) {
 	store := k.storeService.OpenKVStore(ctx)
-	data, err := store.Has([]byte(creator))
+	data, err := store.Has([]byte(receiver))
 	if err != nil {
 		return false, err
 	}
@@ -20,6 +20,6 @@ func (k Keeper) AppendMintData(
 ) string {
 	store := k.storeService.OpenKVStore(ctx)
 	appendedValue := k.cdc.MustMarshal(&mintData)
-	store.Set([]byte(mintData.Creator), appendedValue)
-	return mintData.Creator
+	store.Set([]byte(mintData.Receiver), appendedValue)
+	return mintData.Receiver
 }

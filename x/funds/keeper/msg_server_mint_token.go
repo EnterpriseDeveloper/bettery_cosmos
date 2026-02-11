@@ -17,42 +17,49 @@ func (k msgServer) MintToken(ctx context.Context, msg *types.MsgMintToken) (*typ
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	has, err := k.HasMint(ctx, msg.Creator)
+	fmt.Print(msg.Receiver)
+	fmt.Print(msg.Creator)
+
+	has, err := k.HasMint(ctx, msg.Receiver)
 	if err != nil {
 		return nil, err
 	}
 
 	if has {
-		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, fmt.Sprintf("User already minted tokens"))
+		return &types.MsgMintTokenResponse{
+			Status: "exist",
+		}, nil
+	} else {
+		receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
+		if err != nil {
+			return nil, err
+		}
+		amount, ok := sdkmath.NewIntFromString(types.Amount)
+		if !ok {
+			return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("parse string to init error, amount: %s, user: %s", types.Amount, msg.Receiver))
+		}
+
+		err = k.MintTokens(ctx, receiver, sdk.NewCoin(types.BetToken, amount))
+		if err != nil {
+			return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("error from burn mint, amount: %s, user: %s", types.Amount, msg.Receiver))
+		}
+
+		var mintData = types.MintEvent{
+			Creator:  msg.Creator,
+			Receiver: msg.Receiver,
+			Amount:   types.Amount,
+			Token:    types.BetToken,
+			Time:     uint64(sdk.UnwrapSDKContext(ctx).BlockTime().Unix()),
+		}
+
+		k.AppendMintData(
+			ctx,
+			mintData,
+		)
+
+		return &types.MsgMintTokenResponse{
+			Status: "done",
+		}, nil
 	}
 
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return nil, err
-	}
-	amount, ok := sdkmath.NewIntFromString(types.Amount)
-	if !ok {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("parse string to init error, amount: %s, user: %s", types.Amount, msg.Creator))
-	}
-
-	err = k.MintTokens(ctx, creator, sdk.NewCoin(types.BetToken, amount))
-	if err != nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("error from burn mint, amount: %s, user: %s", types.Amount, msg.Creator))
-	}
-
-	var mintData = types.MintEvent{
-		Creator: msg.Creator,
-		Amount:  types.Amount,
-		Token:   types.BetToken,
-		Time:    uint64(sdk.UnwrapSDKContext(ctx).BlockTime().Unix()),
-	}
-
-	k.AppendMintData(
-		ctx,
-		mintData,
-	)
-
-	return &types.MsgMintTokenResponse{
-		Status: "done",
-	}, nil
 }
