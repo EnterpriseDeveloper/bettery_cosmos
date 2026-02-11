@@ -3,29 +3,55 @@ package keeper
 import (
 	"bettery/x/events/types"
 	"context"
+	"encoding/binary"
 )
 
-func (k Keeper) AppendCreatePubEvents(
+func (k Keeper) AppendEvent(
 	ctx context.Context,
-	createPubEvents types.MsgCreateEvent,
-) string {
+	event types.Events,
+) uint64 {
 	store := k.storeService.OpenKVStore(ctx)
-	appendedValue := k.cdc.MustMarshal(&createPubEvents)
-	store.Set(GetCreatePubEventsIDBytes(createPubEvents.Id), appendedValue)
+	id := k.GetEventCount(ctx)
+	event.Id = id
+	appendedValue := k.cdc.MustMarshal(&event)
+	store.Set(GetEventByIDBytes(event.Id), appendedValue)
+	k.SetEventCount(ctx, id+1)
 
-	return createPubEvents.Id
+	return event.Id
 }
 
-func (k Keeper) HasCreatePubEvents(ctx context.Context, id string) bool {
+func (k Keeper) HasCreatePubEvents(ctx context.Context, id uint64) bool {
 	store := k.storeService.OpenKVStore(ctx)
-	data, err := store.Has(GetCreatePubEventsIDBytes(id))
+	data, err := store.Has(GetEventByIDBytes(id))
 	if err != nil {
 		panic(err)
 	}
 	return data
 }
 
-// GetCreatePubEventsIDBytes returns the byte representation of the ID
-func GetCreatePubEventsIDBytes(id string) []byte {
-	return []byte(id)
+// GetEventByIDBytes returns the byte representation of the ID
+func GetEventByIDBytes(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return bz
+}
+
+func (k Keeper) SetEventCount(ctx context.Context, count uint64) {
+	store := k.storeService.OpenKVStore(ctx)
+
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, count)
+
+	store.Set(types.EventsCountKey, bz)
+}
+
+func (k Keeper) GetEventCount(ctx context.Context) uint64 {
+	store := k.storeService.OpenKVStore(ctx)
+
+	bz, err := store.Get(types.EventsCountKey)
+	if err != nil || bz == nil {
+		return 0
+	}
+
+	return binary.BigEndian.Uint64(bz)
 }

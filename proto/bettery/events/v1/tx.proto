@@ -61,7 +61,7 @@ message MsgCreateEvent {
 
 // MsgCreateEventResponse defines the MsgCreateEventResponse message.
 message MsgCreateEventResponse {
-  string id = 1;
+  uint64 id = 1;
 }
 
 // MsgCreatePartEvent defines the MsgCreatePartEvent message.

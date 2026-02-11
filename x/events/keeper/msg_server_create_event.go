@@ -18,30 +18,31 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	var createPubEvents = types.MsgCreateEvent{
-		Creator:  msg.Creator,
-		Id:       msg.Id,
-		Question: msg.Question,
-		Answers:  msg.Answers,
-		EndTime:  msg.EndTime,
-		Category: msg.Category,
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	timeNow := sdkCtx.BlockTime().Unix()
+
+	var createEvent = types.Events{
+		Creator:   msg.Creator,
+		Question:  msg.Question,
+		Answers:   msg.Answers,
+		StartTime: uint64(timeNow),
+		EndTime:   msg.EndTime,
+		Category:  msg.Category,
+		Status:    "ACTIVE",
 	}
 
 	// check if event exist
-	if k.HasCreatePubEvents(ctx, msg.Id) {
-		return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("event by id %d alredy exist", msg.Id))
+	if k.HasCreatePubEvents(ctx, createEvent.Id) {
+		return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("event by id %d alredy exist", createEvent.Id))
 	}
 
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	timeNow := sdkCtx.BlockTime().Unix()
-	if createPubEvents.EndTime < uint64(timeNow) {
+	if createEvent.EndTime < uint64(timeNow) {
 		return nil, status.Error(codes.InvalidArgument, "end time must be in the future")
 	}
 
-	id := k.AppendCreatePubEvents(
+	id := k.AppendEvent(
 		ctx,
-		createPubEvents,
+		createEvent,
 	)
 
 	return &types.MsgCreateEventResponse{Id: id}, nil

@@ -42,21 +42,21 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "CreateEvent",
-					Use:            "create-event [id] [question] [answers] [start-time] [end-time] [category]",
+					Use:            "create-event [question] [answers] [start-time] [end-time] [category]",
 					Short:          "Send a create-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "question"}, {ProtoField: "answers"}, {ProtoField: "end_time"}, {ProtoField: "category"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "question"}, {ProtoField: "answers"}, {ProtoField: "end_time"}, {ProtoField: "category"}},
 				},
 				{
 					RpcMethod:      "CreatePartEvent",
-					Use:            "create-part-event [id] [event-id] [answers] [amount] [answer-index] [token]",
+					Use:            "create-part-event [event-id] [answers] [amount] [answer-index] [token]",
 					Short:          "Send a create-part-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "amount"}, {ProtoField: "answer_index"}, {ProtoField: "token"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "amount"}, {ProtoField: "answer_index"}, {ProtoField: "token"}},
 				},
 				{
 					RpcMethod:      "ValidateEvent",
-					Use:            "validate-event [id] [event-id] [answer-index] [answers] [source]",
+					Use:            "validate-event [event-id] [answer-index] [answers] [source]",
 					Short:          "Send a validate-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}, {ProtoField: "event_id"}, {ProtoField: "answer_index"}, {ProtoField: "answers"}, {ProtoField: "source"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answer_index"}, {ProtoField: "answers"}, {ProtoField: "source"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
