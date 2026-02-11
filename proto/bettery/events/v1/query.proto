@@ -1,7 +1,9 @@
 syntax = "proto3";
+
 package bettery.events.v1;
 
 import "amino/amino.proto";
+import "bettery/events/v1/events.proto";
 import "bettery/events/v1/params.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
@@ -15,6 +17,16 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/bettery/events/v1/params";
   }
+
+  // ListEvents Queries a list of Events items.
+  rpc GetEvents(QueryGetEventsRequest) returns (QueryGetEventsResponse) {
+    option (google.api.http).get = "/bettery/events/v1/events/{id}";
+  }
+
+  // ListEvents defines the ListEvents RPC.
+  rpc ListEvents(QueryAllEventsRequest) returns (QueryAllEventsResponse) {
+    option (google.api.http).get = "/bettery/events/v1/events";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -27,4 +39,25 @@ message QueryParamsResponse {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+}
+
+// QueryGetEventsRequest defines the QueryGetEventsRequest message.
+message QueryGetEventsRequest {
+  uint64 id = 1;
+}
+
+// QueryGetEventsResponse defines the QueryGetEventsResponse message.
+message QueryGetEventsResponse {
+  Events events = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllEventsRequest defines the QueryAllEventsRequest message.
+message QueryAllEventsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryAllEventsResponse defines the QueryAllEventsResponse message.
+message QueryAllEventsResponse {
+  repeated Events events = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

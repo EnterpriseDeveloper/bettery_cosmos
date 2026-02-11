@@ -17,6 +17,18 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
+				{
+					RpcMethod: "ListEvents",
+					Use:       "list-events",
+					Short:     "List all events",
+				},
+				{
+					RpcMethod:      "GetEvents",
+					Use:            "get-events [id]",
+					Short:          "Gets a events by id",
+					Alias:          []string{"show-events"},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
+				},
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},

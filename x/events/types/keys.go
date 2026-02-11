@@ -17,3 +17,8 @@ const (
 
 // ParamsKey is the prefix to retrieve all Params
 var ParamsKey = collections.NewPrefix("p_events")
+
+var (
+	EventsKey      = collections.NewPrefix("events/value/")
+	EventsCountKey = collections.NewPrefix("events/count/")
+)

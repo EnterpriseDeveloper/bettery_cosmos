@@ -52,13 +52,13 @@ message MsgMintToken {
 
 // MsgMintTokenResponse defines the MsgMintTokenResponse message.
 message MsgMintTokenResponse {
-     string status = 1;
+  string status = 1;
 }
 
 message MintEvent {
   string creator = 1;
   string receiver = 2;
-  string amount  = 3;
-  string token   = 4;
-  uint64 time    = 5;
+  string amount = 3;
+  string token = 4;
+  uint64 time = 5;
 }

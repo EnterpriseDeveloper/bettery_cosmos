@@ -1,7 +1,9 @@
 syntax = "proto3";
+
 package bettery.events.v1;
 
 import "amino/amino.proto";
+import "bettery/events/v1/events.proto";
 import "bettery/events/v1/params.proto";
 import "gogoproto/gogo.proto";
 
@@ -14,4 +16,6 @@ message GenesisState {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+  repeated Events events_list = 2 [(gogoproto.nullable) = false];
+  uint64 events_count = 3;
 }

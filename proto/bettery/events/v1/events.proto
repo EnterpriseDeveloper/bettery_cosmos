@@ -1,0 +1,19 @@
+syntax = "proto3";
+package bettery.events.v1;
+
+option go_package = "bettery/x/events/types";
+
+// Events defines the Events message.
+message Events {
+  uint64 id = 1;
+  string creator = 2;
+  string question = 3;
+  repeated string answers = 4;
+  uint64 end_time = 5;
+  uint64 start_time = 6;
+  string category = 7;
+  string status = 8;
+  uint64 total_pool = 9;
+  string winning_answer = 10;
+  string answer_source = 11;
+}

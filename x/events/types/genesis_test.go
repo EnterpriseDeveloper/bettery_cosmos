@@ -21,8 +21,31 @@ func TestGenesisState_Validate(t *testing.T) {
 		},
 		{
 			desc:     "valid genesis state",
-			genState: &types.GenesisState{},
-			valid:    true,
+			genState: &types.GenesisState{EventsList: []types.Events{{Id: 0}, {Id: 1}}, EventsCount: 2}, valid: true,
+		}, {
+			desc: "duplicated events",
+			genState: &types.GenesisState{
+				EventsList: []types.Events{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		}, {
+			desc: "invalid events count",
+			genState: &types.GenesisState{
+				EventsList: []types.Events{
+					{
+						Id: 1,
+					},
+				},
+				EventsCount: 0,
+			},
+			valid: false,
 		},
 	}
 	for _, tc := range tests {
