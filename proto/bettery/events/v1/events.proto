@@ -9,11 +9,12 @@ message Events {
   string creator = 2;
   string question = 3;
   repeated string answers = 4;
-  uint64 end_time = 5;
-  uint64 start_time = 6;
-  string category = 7;
-  string status = 8;
-  uint64 total_pool = 9;
-  string winning_answer = 10;
-  string answer_source = 11;
+  repeated uint64 answers_pool = 5;
+  uint64 end_time = 6;
+  uint64 start_time = 7;
+  string category = 8;
+  string status = 9;
+  uint64 total_pool = 10;
+  string winning_answer = 11;
+  string answer_source = 12;
 }
