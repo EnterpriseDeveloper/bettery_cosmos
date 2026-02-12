@@ -4,48 +4,61 @@ import (
 	"bettery/x/events/types"
 	"context"
 	"encoding/binary"
+	"slices"
 )
 
 func (k Keeper) findPartEvent(
 	ctx context.Context,
 	eventId uint64,
 	creator string,
-) bool {
+) (bool, error) {
 	store := k.storeService.OpenKVStore(ctx)
-	id := k.GetParticipantCount(ctx)
-	store.Get(types.ParticipantKey(id))
-	// TODO
-	// appendedValue := k.cdc.MustMarshal(&event)
-	// store.Set(types.ParticipantKey(event.Id), appendedValue)
-	// k.SetParticipantCount(ctx, id+1)
-
-	// return event.Id
-	return false
+	var event types.Events
+	data, err := store.Get(types.EventKey(eventId))
+	if err != nil {
+		return false, err
+	}
+	k.cdc.MustUnmarshal(data, &event)
+	if slices.Contains(event.Participants, creator) {
+		return true, nil
+	}
+	return false, nil
 }
 
 func (k Keeper) AppendParticipant(
 	ctx context.Context,
 	event types.Participant,
-) uint64 {
+) (uint64, error) {
 	store := k.storeService.OpenKVStore(ctx)
-	id := k.GetParticipantCount(ctx)
+	id, err := k.GetParticipantCount(ctx)
+	if err != nil {
+		return 0, err
+	}
 	event.Id = id
 	appendedValue := k.cdc.MustMarshal(&event)
 	store.Set(types.ParticipantKey(event.Id), appendedValue)
 	k.SetParticipantCount(ctx, id+1)
 
-	return event.Id
+	_, err = k.updateEvent(ctx, event)
+	if err != nil {
+		return 0, err
+	}
+	return event.Id, nil
+
 }
 
-func (k Keeper) GetParticipantCount(ctx context.Context) uint64 {
+func (k Keeper) GetParticipantCount(ctx context.Context) (uint64, error) {
 	store := k.storeService.OpenKVStore(ctx)
 
 	bz, err := store.Get(types.ParticipantCountKey)
 	if err != nil || bz == nil {
-		return 0
+		return 0, err
+	}
+	if err != nil {
+		return 0, err
 	}
 
-	return binary.BigEndian.Uint64(bz)
+	return binary.BigEndian.Uint64(bz), nil
 }
 
 func (k Keeper) SetParticipantCount(ctx context.Context, count uint64) {

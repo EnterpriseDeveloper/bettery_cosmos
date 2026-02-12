@@ -26,7 +26,6 @@ func createNEvents(keeper keeper.Keeper, ctx context.Context, n int) []types.Eve
 		items[i].StartTime = uint64(i)
 		items[i].Category = strconv.Itoa(i)
 		items[i].Status = strconv.Itoa(i)
-		items[i].TotalPool = uint64(i)
 		items[i].WinningAnswer = strconv.Itoa(i)
 		items[i].AnswerSource = strconv.Itoa(i)
 		_ = keeper.Events.Set(ctx, iu, items[i])

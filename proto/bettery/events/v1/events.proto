@@ -14,7 +14,7 @@ message Events {
   uint64 start_time = 7;
   string category = 8;
   string status = 9;
-  uint64 total_pool = 10;
+  repeated string participants = 10;
   string winning_answer = 11;
   string answer_source = 12;
 }

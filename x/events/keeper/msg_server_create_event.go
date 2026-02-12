@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"bettery/x/events/types"
 
@@ -21,23 +22,28 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 	timeNow := sdkCtx.BlockTime().Unix()
 
 	var createEvent = types.Events{
-		Creator:   msg.Creator,
-		Question:  msg.Question,
-		Answers:   msg.Answers,
-		StartTime: uint64(timeNow),
-		EndTime:   msg.EndTime,
-		Category:  msg.Category,
-		Status:    types.ActiveEvent,
+		Creator:     msg.Creator,
+		Question:    msg.Question,
+		Answers:     msg.Answers,
+		StartTime:   uint64(timeNow),
+		EndTime:     msg.EndTime,
+		Category:    msg.Category,
+		Status:      types.ActiveEvent,
+		AnswersPool: make([]uint64, len(msg.Answers)),
 	}
 
 	if createEvent.EndTime < uint64(timeNow) {
 		return nil, status.Error(codes.InvalidArgument, "end time must be in the future")
 	}
 
-	id := k.AppendEvent(
+	id, err := k.AppendEvent(
 		ctx,
 		createEvent,
 	)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to append event: %v", err))
+	}
 
 	return &types.MsgCreateEventResponse{Id: id}, nil
 }
