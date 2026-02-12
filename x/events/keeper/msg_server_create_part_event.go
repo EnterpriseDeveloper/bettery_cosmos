@@ -18,8 +18,6 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	fmt.Print("WORK 1")
-
 	// check if event exist
 	exist, err := k.HasCreateEvents(ctx, msg.EventId)
 	if err != nil {
@@ -29,7 +27,18 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("event doesn't exist by id: %d", msg.EventId))
 	}
 
-	fmt.Print("WORK 2")
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	timeNow := sdkCtx.BlockTime().Unix()
+
+	// check if event already finished, user can't participate in it
+	endTime, err := k.getEventEndTime(ctx, msg.EventId)
+	if err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("failed to get event end time: %s", err.Error()))
+	}
+
+	if endTime < uint64(timeNow) {
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("event already finished by id: %d", msg.EventId))
+	}
 
 	// check if event not finished
 	finished, err := k.GetEventFinished(ctx, msg.EventId)
@@ -39,8 +48,6 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 	if finished {
 		return nil, status.Error(codes.Unknown, fmt.Sprintf("event already finished by id: %d", msg.EventId))
 	}
-
-	fmt.Print("WORK 3")
 
 	// check if user alredy part in event
 	find, err := k.findPartEvent(ctx, msg.EventId, msg.Creator)

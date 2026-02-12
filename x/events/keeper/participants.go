@@ -39,7 +39,7 @@ func (k Keeper) AppendParticipant(
 	store.Set(types.ParticipantKey(event.Id), appendedValue)
 	k.SetParticipantCount(ctx, id+1)
 
-	_, err = k.updateEvent(ctx, event)
+	_, err = k.updateEventFromParticipant(ctx, event)
 	if err != nil {
 		return 0, err
 	}
@@ -68,4 +68,39 @@ func (k Keeper) SetParticipantCount(ctx context.Context, count uint64) {
 	binary.BigEndian.PutUint64(bz, count)
 
 	store.Set(types.ParticipantCountKey, bz)
+}
+
+func (k Keeper) GetParticipantsByEvent(
+	ctx context.Context,
+	eventId uint64,
+	answer string,
+) ([]types.Participant, []types.Participant, uint64, uint64, error) {
+
+	var allUsers []types.Participant
+	var winUsers []types.Participant
+	totalPool := uint64(0)
+	winnersPool := uint64(0)
+
+	// TODO think about index for participants by event id for optimization
+	err := k.Participant.Walk(
+		ctx,
+		nil,
+		func(_ uint64, p types.Participant) (bool, error) {
+			if p.EventId == eventId {
+				totalPool += p.Amount
+				allUsers = append(allUsers, p)
+				if p.Answer == answer {
+					winUsers = append(winUsers, p)
+					winnersPool += p.Amount
+				}
+			}
+			return false, nil
+		},
+	)
+
+	if err != nil {
+		return nil, nil, 0, 0, err
+	}
+
+	return allUsers, winUsers, totalPool, winnersPool, nil
 }

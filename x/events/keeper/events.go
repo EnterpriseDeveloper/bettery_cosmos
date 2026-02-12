@@ -68,6 +68,14 @@ func (k Keeper) GetEventFinished(ctx context.Context, id uint64) (bool, error) {
 	return event.Status == types.FinishedEvent || event.Status == types.RefundEvent, nil
 }
 
+func (k Keeper) getEventEndTime(ctx context.Context, id uint64) (uint64, error) {
+	event, err := k.GetEventById(ctx, id)
+	if err != nil {
+		return 0, err
+	}
+	return event.EndTime, nil
+}
+
 func (k Keeper) GetEventById(ctx context.Context, id uint64) (types.Events, error) {
 	store := k.storeService.OpenKVStore(ctx)
 	var event types.Events
@@ -79,7 +87,7 @@ func (k Keeper) GetEventById(ctx context.Context, id uint64) (types.Events, erro
 	return event, nil
 }
 
-func (k Keeper) updateEvent(ctx context.Context, participant types.Participant) (bool, error) {
+func (k Keeper) updateEventFromParticipant(ctx context.Context, participant types.Participant) (bool, error) {
 	store := k.storeService.OpenKVStore(ctx)
 	var event types.Events
 	data, err := store.Get(types.EventKey(participant.EventId))
@@ -97,7 +105,20 @@ func (k Keeper) updateEvent(ctx context.Context, participant types.Participant) 
 		store.Set(types.EventKey(event.Id), appendedValue)
 		return true, nil
 	}
+}
 
+func (k Keeper) updateEventFromValidator(ctx context.Context, validator types.Validator, status string) (bool, error) {
+	store := k.storeService.OpenKVStore(ctx)
+	var event types.Events
+	data, err := store.Get(types.EventKey(validator.EventId))
+	if err != nil {
+		return false, err
+	}
+	k.cdc.MustUnmarshal(data, &event)
+	event.Status = status
+	appendedValue := k.cdc.MustMarshal(&event)
+	store.Set(types.EventKey(event.Id), appendedValue)
+	return true, nil
 }
 
 func indexOf(slice []string, target string) int {

@@ -60,7 +60,7 @@ func NewKeeper(
 		EventsSeq:      collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
 		Participant:    collections.NewMap(sb, types.ParticipantKeyPrefix, "participant", collections.Uint64Key, codec.CollValue[types.Participant](cdc)),
 		ParticipantSeq: collections.NewSequence(sb, types.ParticipantCountKey, "participantSequence"),
-		Validator:      collections.NewMap(sb, types.ValidatorKey, "validator", collections.Uint64Key, codec.CollValue[types.Validator](cdc)),
+		Validator:      collections.NewMap(sb, types.ValidatorKeyPrefix, "validator", collections.Uint64Key, codec.CollValue[types.Validator](cdc)),
 		ValidatorSeq:   collections.NewSequence(sb, types.ValidatorCountKey, "validatorSequence"),
 	}
 	schema, err := sb.Build()

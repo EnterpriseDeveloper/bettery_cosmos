@@ -22,7 +22,6 @@ func createNValidator(keeper keeper.Keeper, ctx context.Context, n int) []types.
 		items[i].Id = iu
 		items[i].EventId = uint64(i)
 		items[i].Answer = strconv.Itoa(i)
-		items[i].Source = uint64(i)
 		items[i].Refunded = true
 		items[i].CompanyAmount = strconv.Itoa(i)
 		_ = keeper.Validator.Set(ctx, iu, items[i])

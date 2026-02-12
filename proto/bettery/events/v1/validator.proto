@@ -8,7 +8,7 @@ message Validator {
   uint64 id = 1;
   uint64 event_id = 2;
   string answer = 3;
-  uint64 source = 4;
+  string source = 4;
   bool refunded = 5;
   string company_amount = 6;
 }
