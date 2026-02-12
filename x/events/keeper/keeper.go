@@ -56,7 +56,7 @@ func NewKeeper(
 		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		Events:         collections.NewMap(sb, types.EventsKeyPrefix, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
 		EventsSeq:      collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
-		Participant:    collections.NewMap(sb, types.ParticipantKey, "participant", collections.Uint64Key, codec.CollValue[types.Participant](cdc)),
+		Participant:    collections.NewMap(sb, types.ParticipantKeyPrefix, "participant", collections.Uint64Key, codec.CollValue[types.Participant](cdc)),
 		ParticipantSeq: collections.NewSequence(sb, types.ParticipantCountKey, "participantSequence"),
 	}
 	schema, err := sb.Build()

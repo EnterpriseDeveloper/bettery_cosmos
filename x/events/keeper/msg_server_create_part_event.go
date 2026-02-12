@@ -34,11 +34,12 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 
 	fmt.Print("WORK 3")
 
+	// TODO
 	// check if user alredy part in event
-	find := k.findPartEvent(ctx, msg.EventId, msg.Creator)
-	if find {
-		return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("user: %s alredy participate in event by id: %d", msg.Creator, msg.EventId))
-	}
+	// find := k.findPartEvent(ctx, msg.EventId, msg.Creator)
+	// if find {
+	// 	return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("user: %s alredy participate in event by id: %d", msg.Creator, msg.EventId))
+	// }
 
 	coin, err := sdk.ParseCoinNormalized(msg.Amount.String())
 	if err != nil {
@@ -56,6 +57,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 
 	// TODO check if user have enough balance for participate in event
 	// TODO check coins type for participate in event
+	// TODO update event data for collecting amount for each answer
 	err = k.bankKeeper.SendCoinsFromAccountToModule(
 		ctx,
 		sender,

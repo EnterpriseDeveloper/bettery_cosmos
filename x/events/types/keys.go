@@ -40,6 +40,12 @@ func EventKey(id uint64) []byte {
 }
 
 var (
-	ParticipantKey      = collections.NewPrefix("participant/value/")
-	ParticipantCountKey = collections.NewPrefix("participant/count/")
+	ParticipantKeyPrefix = collections.NewPrefix("participant/value/")
+	ParticipantCountKey  = collections.NewPrefix("participant/count/")
 )
+
+func ParticipantKey(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return append(ParticipantKeyPrefix, bz...)
+}

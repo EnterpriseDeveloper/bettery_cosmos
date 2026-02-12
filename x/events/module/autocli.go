@@ -60,15 +60,15 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "CreatePartEvent",
-					Use:            "create-part-event [event-id] [answers] [amount] [answer-index] [token]",
+					Use:            "create-part-event [event-id] [answers] [amount]",
 					Short:          "Send a create-part-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "amount"}, {ProtoField: "answer_index"}, {ProtoField: "token"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "amount"}},
 				},
 				{
 					RpcMethod:      "ValidateEvent",
-					Use:            "validate-event [event-id] [answer-index] [answers] [source]",
+					Use:            "validate-event [event-id] [answers] [source]",
 					Short:          "Send a validate-event tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answer_index"}, {ProtoField: "answers"}, {ProtoField: "source"}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "answers"}, {ProtoField: "source"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
