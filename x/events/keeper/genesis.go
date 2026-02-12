@@ -26,6 +26,15 @@ func (k Keeper) InitGenesis(ctx context.Context, genState types.GenesisState) er
 	if err := k.ParticipantSeq.Set(ctx, genState.ParticipantCount); err != nil {
 		return err
 	}
+	for _, elem := range genState.ValidatorList {
+		if err := k.Validator.Set(ctx, elem.Id, elem); err != nil {
+			return err
+		}
+	}
+
+	if err := k.ValidatorSeq.Set(ctx, genState.ValidatorCount); err != nil {
+		return err
+	}
 
 	return k.Params.Set(ctx, genState.Params)
 }
@@ -60,6 +69,18 @@ func (k Keeper) ExportGenesis(ctx context.Context) (*types.GenesisState, error) 
 	}
 
 	genesis.ParticipantCount, err = k.ParticipantSeq.Peek(ctx)
+	if err != nil {
+		return nil, err
+	}
+	err = k.Validator.Walk(ctx, nil, func(key uint64, elem types.Validator) (bool, error) {
+		genesis.ValidatorList = append(genesis.ValidatorList, elem)
+		return false, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	genesis.ValidatorCount, err = k.ValidatorSeq.Peek(ctx)
 	if err != nil {
 		return nil, err
 	}

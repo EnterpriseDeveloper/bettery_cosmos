@@ -50,3 +50,8 @@ func ParticipantKey(id uint64) []byte {
 	binary.BigEndian.PutUint64(bz, id)
 	return append(ParticipantKeyPrefix, bz...)
 }
+
+var (
+	ValidatorKey      = collections.NewPrefix("validator/value/")
+	ValidatorCountKey = collections.NewPrefix("validator/count/")
+)

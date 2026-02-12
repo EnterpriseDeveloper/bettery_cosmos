@@ -28,6 +28,8 @@ type Keeper struct {
 	Events         collections.Map[uint64, types.Events]
 	ParticipantSeq collections.Sequence
 	Participant    collections.Map[uint64, types.Participant]
+	ValidatorSeq   collections.Sequence
+	Validator      collections.Map[uint64, types.Validator]
 }
 
 func NewKeeper(
@@ -58,6 +60,8 @@ func NewKeeper(
 		EventsSeq:      collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),
 		Participant:    collections.NewMap(sb, types.ParticipantKeyPrefix, "participant", collections.Uint64Key, codec.CollValue[types.Participant](cdc)),
 		ParticipantSeq: collections.NewSequence(sb, types.ParticipantCountKey, "participantSequence"),
+		Validator:      collections.NewMap(sb, types.ValidatorKey, "validator", collections.Uint64Key, codec.CollValue[types.Validator](cdc)),
+		ValidatorSeq:   collections.NewSequence(sb, types.ValidatorCountKey, "validatorSequence"),
 	}
 	schema, err := sb.Build()
 	if err != nil {

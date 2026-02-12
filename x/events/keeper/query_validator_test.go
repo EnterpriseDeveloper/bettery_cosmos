@@ -15,46 +15,45 @@ import (
 	"bettery/x/events/types"
 )
 
-func createNEvents(keeper keeper.Keeper, ctx context.Context, n int) []types.Events {
-	items := make([]types.Events, n)
+func createNValidator(keeper keeper.Keeper, ctx context.Context, n int) []types.Validator {
+	items := make([]types.Validator, n)
 	for i := range items {
 		iu := uint64(i)
 		items[i].Id = iu
-		items[i].Creator = strconv.Itoa(i)
-		items[i].Question = strconv.Itoa(i)
-		items[i].EndTime = uint64(i)
-		items[i].StartTime = uint64(i)
-		items[i].Category = strconv.Itoa(i)
-		items[i].Status = strconv.Itoa(i)
-		_ = keeper.Events.Set(ctx, iu, items[i])
-		_ = keeper.EventsSeq.Set(ctx, iu)
+		items[i].EventId = uint64(i)
+		items[i].Answer = strconv.Itoa(i)
+		items[i].Source = uint64(i)
+		items[i].Refunded = true
+		items[i].CompanyAmount = strconv.Itoa(i)
+		_ = keeper.Validator.Set(ctx, iu, items[i])
+		_ = keeper.ValidatorSeq.Set(ctx, iu)
 	}
 	return items
 }
 
-func TestEventsQuerySingle(t *testing.T) {
+func TestValidatorQuerySingle(t *testing.T) {
 	f := initFixture(t)
 	qs := keeper.NewQueryServerImpl(f.keeper)
-	msgs := createNEvents(f.keeper, f.ctx, 2)
+	msgs := createNValidator(f.keeper, f.ctx, 2)
 	tests := []struct {
 		desc     string
-		request  *types.QueryGetEventsRequest
-		response *types.QueryGetEventsResponse
+		request  *types.QueryGetValidatorRequest
+		response *types.QueryGetValidatorResponse
 		err      error
 	}{
 		{
 			desc:     "First",
-			request:  &types.QueryGetEventsRequest{Id: msgs[0].Id},
-			response: &types.QueryGetEventsResponse{Events: msgs[0]},
+			request:  &types.QueryGetValidatorRequest{Id: msgs[0].Id},
+			response: &types.QueryGetValidatorResponse{Validator: msgs[0]},
 		},
 		{
 			desc:     "Second",
-			request:  &types.QueryGetEventsRequest{Id: msgs[1].Id},
-			response: &types.QueryGetEventsResponse{Events: msgs[1]},
+			request:  &types.QueryGetValidatorRequest{Id: msgs[1].Id},
+			response: &types.QueryGetValidatorResponse{Validator: msgs[1]},
 		},
 		{
 			desc:    "KeyNotFound",
-			request: &types.QueryGetEventsRequest{Id: uint64(len(msgs))},
+			request: &types.QueryGetValidatorRequest{Id: uint64(len(msgs))},
 			err:     sdkerrors.ErrKeyNotFound,
 		},
 		{
@@ -64,7 +63,7 @@ func TestEventsQuerySingle(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := qs.GetEvents(f.ctx, tc.request)
+			response, err := qs.GetValidator(f.ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -75,13 +74,13 @@ func TestEventsQuerySingle(t *testing.T) {
 	}
 }
 
-func TestEventsQueryPaginated(t *testing.T) {
+func TestValidatorQueryPaginated(t *testing.T) {
 	f := initFixture(t)
 	qs := keeper.NewQueryServerImpl(f.keeper)
-	msgs := createNEvents(f.keeper, f.ctx, 5)
+	msgs := createNValidator(f.keeper, f.ctx, 5)
 
-	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllEventsRequest {
-		return &types.QueryAllEventsRequest{
+	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllValidatorRequest {
+		return &types.QueryAllValidatorRequest{
 			Pagination: &query.PageRequest{
 				Key:        next,
 				Offset:     offset,
@@ -93,31 +92,31 @@ func TestEventsQueryPaginated(t *testing.T) {
 	t.Run("ByOffset", func(t *testing.T) {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := qs.ListEvents(f.ctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := qs.ListValidator(f.ctx, request(nil, uint64(i), uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Events), step)
-			require.Subset(t, msgs, resp.Events)
+			require.LessOrEqual(t, len(resp.Validator), step)
+			require.Subset(t, msgs, resp.Validator)
 		}
 	})
 	t.Run("ByKey", func(t *testing.T) {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := qs.ListEvents(f.ctx, request(next, 0, uint64(step), false))
+			resp, err := qs.ListValidator(f.ctx, request(next, 0, uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Events), step)
-			require.Subset(t, msgs, resp.Events)
+			require.LessOrEqual(t, len(resp.Validator), step)
+			require.Subset(t, msgs, resp.Validator)
 			next = resp.Pagination.NextKey
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
-		resp, err := qs.ListEvents(f.ctx, request(nil, 0, 0, true))
+		resp, err := qs.ListValidator(f.ctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
 		require.Equal(t, len(msgs), int(resp.Pagination.Total))
-		require.EqualExportedValues(t, msgs, resp.Events)
+		require.EqualExportedValues(t, msgs, resp.Validator)
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := qs.ListEvents(f.ctx, nil)
+		_, err := qs.ListValidator(f.ctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

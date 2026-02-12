@@ -6,6 +6,7 @@ import "amino/amino.proto";
 import "bettery/events/v1/events.proto";
 import "bettery/events/v1/params.proto";
 import "bettery/events/v1/participant.proto";
+import "bettery/events/v1/validator.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "bettery/x/events/types";
@@ -21,4 +22,6 @@ message GenesisState {
   uint64 events_count = 3;
   repeated Participant participant_list = 4 [(gogoproto.nullable) = false];
   uint64 participant_count = 5;
+  repeated Validator validator_list = 6 [(gogoproto.nullable) = false];
+  uint64 validator_count = 7;
 }

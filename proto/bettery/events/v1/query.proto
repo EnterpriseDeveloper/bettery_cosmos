@@ -6,6 +6,7 @@ import "amino/amino.proto";
 import "bettery/events/v1/events.proto";
 import "bettery/events/v1/params.proto";
 import "bettery/events/v1/participant.proto";
+import "bettery/events/v1/validator.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -37,6 +38,16 @@ service Query {
   // ListParticipant defines the ListParticipant RPC.
   rpc ListParticipant(QueryAllParticipantRequest) returns (QueryAllParticipantResponse) {
     option (google.api.http).get = "/bettery/events/v1/participant";
+  }
+
+  // ListValidator Queries a list of Validator items.
+  rpc GetValidator(QueryGetValidatorRequest) returns (QueryGetValidatorResponse) {
+    option (google.api.http).get = "/bettery/events/v1/validator/{id}";
+  }
+
+  // ListValidator defines the ListValidator RPC.
+  rpc ListValidator(QueryAllValidatorRequest) returns (QueryAllValidatorResponse) {
+    option (google.api.http).get = "/bettery/events/v1/validator";
   }
 }
 
@@ -91,5 +102,26 @@ message QueryAllParticipantRequest {
 // QueryAllParticipantResponse defines the QueryAllParticipantResponse message.
 message QueryAllParticipantResponse {
   repeated Participant participant = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryGetValidatorRequest defines the QueryGetValidatorRequest message.
+message QueryGetValidatorRequest {
+  uint64 id = 1;
+}
+
+// QueryGetValidatorResponse defines the QueryGetValidatorResponse message.
+message QueryGetValidatorResponse {
+  Validator validator = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryAllValidatorRequest defines the QueryAllValidatorRequest message.
+message QueryAllValidatorRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryAllValidatorResponse defines the QueryAllValidatorResponse message.
+message QueryAllValidatorResponse {
+  repeated Validator validator = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

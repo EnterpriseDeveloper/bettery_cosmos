@@ -15,6 +15,4 @@ message Events {
   string category = 8;
   string status = 9;
   repeated string participants = 10;
-  string winning_answer = 11;
-  string answer_source = 12;
 }
