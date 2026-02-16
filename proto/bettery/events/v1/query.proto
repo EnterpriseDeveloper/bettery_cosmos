@@ -49,6 +49,11 @@ service Query {
   rpc ListValidator(QueryAllValidatorRequest) returns (QueryAllValidatorResponse) {
     option (google.api.http).get = "/bettery/events/v1/validator";
   }
+
+  // ParticipantById Queries a list of ParticipantById items.
+  rpc ParticipantById(QueryParticipantByIdRequest) returns (QueryParticipantByIdResponse) {
+    option (google.api.http).get = "/bettery/events/v1/participant_by_id/{event_id}/{creator}";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -124,4 +129,15 @@ message QueryAllValidatorRequest {
 message QueryAllValidatorResponse {
   repeated Validator validator = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryParticipantByIdRequest defines the QueryParticipantByIdRequest message.
+message QueryParticipantByIdRequest {
+  uint64 event_id = 1;
+  string creator = 2;
+}
+
+// QueryParticipantByIdResponse defines the QueryParticipantByIdResponse message.
+message QueryParticipantByIdResponse {
+  Participant participant = 1;
 }

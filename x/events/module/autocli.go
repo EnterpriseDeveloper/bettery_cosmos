@@ -53,6 +53,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Alias:          []string{"show-validator"},
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "id"}},
 				},
+				{
+					RpcMethod:      "ParticipantById",
+					Use:            "participant-by-id [event-id] [creator]",
+					Short:          "Query participantById",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "event_id"}, {ProtoField: "creator"}},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
