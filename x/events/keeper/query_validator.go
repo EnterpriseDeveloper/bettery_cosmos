@@ -34,6 +34,16 @@ func (q queryServer) ListValidator(ctx context.Context, req *types.QueryAllValid
 	return &types.QueryAllValidatorResponse{Validator: validators, Pagination: pageRes}, nil
 }
 
+func (q queryServer) ListEventsForValidator(ctx context.Context, req *types.QueryAllEventsForValidatorRequest) (*types.QueryEventsForValidatorResponse, error) {
+	events, err := q.k.GetEventsForValidation(ctx)
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryEventsForValidatorResponse{Events: events}, nil
+}
+
 func (q queryServer) GetValidator(ctx context.Context, req *types.QueryGetValidatorRequest) (*types.QueryGetValidatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

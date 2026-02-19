@@ -47,6 +47,15 @@ func (k Keeper) AppendParticipant(
 
 }
 
+func (k Keeper) updateParticipantFromValidator(ctx context.Context, participant types.Participant, amount uint64) (bool, error) {
+	store := k.storeService.OpenKVStore(ctx)
+
+	participant.Result = amount
+	appendedValue := k.cdc.MustMarshal(&participant)
+	store.Set(types.ParticipantKey(participant.Id), appendedValue)
+	return true, nil
+}
+
 func (k Keeper) GetParticipantCount(ctx context.Context) (uint64, error) {
 	store := k.storeService.OpenKVStore(ctx)
 

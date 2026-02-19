@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -128,4 +129,27 @@ func indexOf(slice []string, target string) int {
 		}
 	}
 	return -1 // not found
+}
+
+// TODO optimizate for larger data, or move to traditional DB
+func (k Keeper) GetEventsForValidation(ctx context.Context) ([]types.Events, error) {
+	var events []types.Events
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	timeNow := sdkCtx.BlockTime().Unix()
+
+	err := k.Events.Walk(
+		ctx,
+		nil,
+		func(_ uint64, p types.Events) (bool, error) {
+			if p.EndTime < uint64(timeNow) && p.Status == types.ActiveEvent {
+				events = append(events, p)
+			}
+			return false, nil
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
 }

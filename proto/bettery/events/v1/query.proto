@@ -50,6 +50,11 @@ service Query {
     option (google.api.http).get = "/bettery/events/v1/validator";
   }
 
+    // ListEventsForValidator defines the ListValidator RPC.
+  rpc ListEventsForValidator(QueryAllEventsForValidatorRequest) returns (QueryEventsForValidatorResponse) {
+    option (google.api.http).get = "/bettery/events/v1/events_for_validator";
+  }
+
   // ParticipantById Queries a list of ParticipantById items.
   rpc ParticipantById(QueryParticipantByIdRequest) returns (QueryParticipantByIdResponse) {
     option (google.api.http).get = "/bettery/events/v1/participant_by_id/{event_id}/{creator}";
@@ -76,6 +81,10 @@ message QueryGetEventsRequest {
 // QueryGetEventsResponse defines the QueryGetEventsResponse message.
 message QueryGetEventsResponse {
   Events events = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEventsForValidatorResponse {
+  repeated Events events = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryAllEventsRequest defines the QueryAllEventsRequest message.
@@ -124,6 +133,9 @@ message QueryGetValidatorResponse {
 message QueryAllValidatorRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
+
+// QueryAllEventsForValidatorRequest defines the QueryAllEventsForValidatorRequest message.
+message QueryAllEventsForValidatorRequest {}
 
 // QueryAllValidatorResponse defines the QueryAllValidatorResponse message.
 message QueryAllValidatorResponse {

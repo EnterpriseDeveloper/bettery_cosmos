@@ -47,6 +47,11 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 				if err != nil {
 					return 0, err
 				}
+
+				_, err = k.updateParticipantFromValidator(ctx, p, reward)
+				if err != nil {
+					return 0, err
+				}
 			}
 			_, err = k.AppendValidator(ctx, data, strconv.FormatUint(companyFee, 10), false)
 			if err != nil {
