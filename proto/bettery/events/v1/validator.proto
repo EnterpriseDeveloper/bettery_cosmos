@@ -11,4 +11,5 @@ message Validator {
   string source = 4;
   bool refunded = 5;
   string company_amount = 6;
+  uint64 created_at = 7;
 }

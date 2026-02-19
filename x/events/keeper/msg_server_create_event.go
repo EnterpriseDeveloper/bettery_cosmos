@@ -45,5 +45,18 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to append event: %v", err))
 	}
 
+	sdkCtx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			"create_event",
+			sdk.NewAttribute("creator", createEvent.Creator),
+			sdk.NewAttribute("question", createEvent.Question),
+			sdk.NewAttribute("answers", fmt.Sprintf("%d", createEvent.Answers)),
+			sdk.NewAttribute("startTime", fmt.Sprintf("%d", createEvent.StartTime)),
+			sdk.NewAttribute("endTime", fmt.Sprintf("%d", createEvent.EndTime)),
+			sdk.NewAttribute("category", createEvent.Category),
+			sdk.NewAttribute("status", createEvent.Status),
+		),
+	)
+
 	return &types.MsgCreateEventResponse{Id: id}, nil
 }

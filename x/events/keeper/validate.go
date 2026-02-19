@@ -14,6 +14,7 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 	if err != nil {
 		return 0, err
 	}
+	var companyFee uint64 = 0
 	if len(allUsers) != 0 {
 		if len(winUsers) == 0 && totalPool > 0 {
 			_, err := k.sendMoney(ctx, types.CompanyAddress, totalPool)
@@ -21,19 +22,19 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 				return 0, err
 			}
 			companyAmount := strconv.FormatUint(totalPool, 10)
-			id, err := k.AppendValidator(ctx, data, companyAmount, false)
+			_, err = k.AppendValidator(ctx, data, companyAmount, false)
 			if err != nil {
 				return 0, err
 			}
-			return id, nil
+			return companyFee, nil
 		} else if len(allUsers)-len(winUsers) == 0 {
-			id, err := k.refundEvent(ctx, data)
+			_, err := k.refundEvent(ctx, data)
 			if err != nil {
 				return 0, err
 			}
-			return id, nil
+			return companyFee, nil
 		} else {
-			companyFee := totalPool * uint64(types.CompanyPercent) / 100
+			companyFee = totalPool * uint64(types.CompanyPercent) / 100
 			_, err := k.sendMoney(ctx, types.CompanyAddress, companyFee)
 			if err != nil {
 				return 0, err
@@ -47,19 +48,19 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 					return 0, err
 				}
 			}
-			id, err := k.AppendValidator(ctx, data, strconv.FormatUint(companyFee, 10), false)
+			_, err = k.AppendValidator(ctx, data, strconv.FormatUint(companyFee, 10), false)
 			if err != nil {
 				return 0, err
 			}
-			return id, nil
+			return companyFee, nil
 		}
 
 	} else {
-		id, err := k.AppendValidator(ctx, data, "0", false)
+		_, err := k.AppendValidator(ctx, data, "0", false)
 		if err != nil {
 			return 0, err
 		}
-		return id, nil
+		return companyFee, nil
 	}
 }
 
@@ -76,11 +77,11 @@ func (k Keeper) refundEvent(ctx context.Context, msg types.Validator) (uint64, e
 			}
 		}
 	}
-	id, err := k.AppendValidator(ctx, msg, "0", true)
+	_, err = k.AppendValidator(ctx, msg, "0", true)
 	if err != nil {
 		return 0, err
 	}
-	return id, nil
+	return 0, nil
 
 }
 

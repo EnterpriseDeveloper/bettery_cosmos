@@ -90,22 +90,35 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to send coins: %s", err.Error()))
 	}
 
-	var partPubEvents = types.Participant{
-		Creator: msg.Creator,
-		EventId: msg.EventId,
-		Answer:  msg.Answers,
-		Amount:  sendAmount,
-		Token:   msg.Amount.Denom,
+	var partEvents = types.Participant{
+		Creator:   msg.Creator,
+		EventId:   msg.EventId,
+		Answer:    msg.Answers,
+		Amount:    sendAmount,
+		Token:     msg.Amount.Denom,
+		CreatedAt: uint64(timeNow),
 	}
 
 	_, err = k.AppendParticipant(
 		ctx,
-		partPubEvents,
+		partEvents,
 	)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to append participant: %v", err))
 	}
+
+	sdkCtx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			"participate_event",
+			sdk.NewAttribute("creator", partEvents.Creator),
+			sdk.NewAttribute("eventId", fmt.Sprintf("%d", partEvents.EventId)),
+			sdk.NewAttribute("answer", partEvents.Answer),
+			sdk.NewAttribute("amount", fmt.Sprintf("%d", partEvents.Amount)),
+			sdk.NewAttribute("token", partEvents.Token),
+			sdk.NewAttribute("createdAt", fmt.Sprintf("%d", partEvents.CreatedAt)),
+		),
+	)
 
 	return &types.MsgCreatePartEventResponse{}, nil
 }

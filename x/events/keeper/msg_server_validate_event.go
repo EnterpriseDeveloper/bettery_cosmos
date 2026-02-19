@@ -52,22 +52,38 @@ func (k msgServer) ValidateEvent(ctx context.Context, msg *types.MsgValidateEven
 	}
 
 	validate := types.Validator{
-		EventId: msg.EventId,
-		Answer:  msg.Answers,
-		Source:  msg.Source,
+		EventId:   msg.EventId,
+		Answer:    msg.Answers,
+		Source:    msg.Source,
+		CreatedAt: uint64(timeNow),
 	}
 
+	var companyFee uint64 = 0
+
 	if msg.Answers == types.RefundEvent {
-		_, err := k.refundEvent(ctx, validate)
+		companyFee, err = k.refundEvent(ctx, validate)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to refund event: %s, event id: %d", err.Error(), msg.EventId))
 		}
 	} else {
-		_, err := k.validateEvent(ctx, validate)
+		companyFee, err = k.validateEvent(ctx, validate)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to validate event: %s, event id: %d", err.Error(), msg.EventId))
 		}
 	}
+
+	sdkCtx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			"participate_event",
+			sdk.NewAttribute("creator", msg.Creator),
+			sdk.NewAttribute("eventId", fmt.Sprintf("%d", validate.EventId)),
+			sdk.NewAttribute("answer", validate.Answer),
+			sdk.NewAttribute("source", validate.Source),
+			sdk.NewAttribute("createdAt", fmt.Sprintf("%d", validate.CreatedAt)),
+			sdk.NewAttribute("refunded", msg.Answers),
+			sdk.NewAttribute("companyFee", fmt.Sprintf("%d", companyFee)),
+		),
+	)
 
 	return &types.MsgValidateEventResponse{}, nil
 }
