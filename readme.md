@@ -9,7 +9,7 @@ ignite chain serve
 ```
 
 ```
-cd proto \ sudo buf generate --template buf.gen.ts.yaml - gen proto
+cd proto \ sudo buf generate --template buf.gen.yaml - gen proto
 ```
 
 `serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
