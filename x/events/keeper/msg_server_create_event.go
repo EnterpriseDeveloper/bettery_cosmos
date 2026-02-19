@@ -32,7 +32,7 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		AnswersPool: make([]uint64, len(msg.Answers)),
 	}
 
-	if createEvent.EndTime < uint64(timeNow) {
+	if createEvent.EndTime < createEvent.StartTime {
 		return nil, status.Error(codes.InvalidArgument, "end time must be in the future")
 	}
 
