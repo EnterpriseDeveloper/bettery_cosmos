@@ -6,6 +6,8 @@ import (
 	"encoding/binary"
 	"strconv"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -95,14 +97,22 @@ func (k Keeper) sendMoney(ctx context.Context, address string, amount uint64) (b
 	if err != nil {
 		return false, err
 	}
-	coin, err := sdk.ParseCoinNormalized(strconv.FormatUint(amount, 10))
+
+	coin := sdk.NewCoin(
+		types.BetToken,
+		math.NewIntFromUint64(amount),
+	)
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(
+		ctx,
+		types.ModuleName,
+		sender,
+		sdk.NewCoins(coin),
+	)
 	if err != nil {
 		return false, err
 	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(coin))
-	if err != nil {
-		return false, err
-	}
+
 	return true, nil
 }
 
