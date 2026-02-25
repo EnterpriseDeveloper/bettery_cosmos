@@ -44,6 +44,21 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgMintToken,
 		fundssimulation.SimulateMsgMintToken(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
 	))
+	const (
+		opWeightMsgMintFromEvm          = "op_weight_msg_funds"
+		defaultWeightMsgMintFromEvm int = 100
+	)
+
+	var weightMsgMintFromEvm int
+	simState.AppParams.GetOrGenerate(opWeightMsgMintFromEvm, &weightMsgMintFromEvm, nil,
+		func(_ *rand.Rand) {
+			weightMsgMintFromEvm = defaultWeightMsgMintFromEvm
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgMintFromEvm,
+		fundssimulation.SimulateMsgMintFromEvm(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
+	))
 
 	return operations
 }

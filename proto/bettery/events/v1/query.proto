@@ -50,7 +50,7 @@ service Query {
     option (google.api.http).get = "/bettery/events/v1/validator";
   }
 
-    // ListEventsForValidator defines the ListValidator RPC.
+  // ListEventsForValidator defines the ListValidator RPC.
   rpc ListEventsForValidator(QueryAllEventsForValidatorRequest) returns (QueryEventsForValidatorResponse) {
     option (google.api.http).get = "/bettery/events/v1/events_for_validator";
   }
