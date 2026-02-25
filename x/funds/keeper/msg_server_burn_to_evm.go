@@ -33,10 +33,10 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 		amount,
 	)
 
-	err := k.mintKeeper.BurnCoins(
+	err := k.bankKeeper.BurnCoins(
 		ctx,
 		types.ModuleName,
-		coin,
+		sdk.NewCoins(coin),
 	)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "Burn tokens")

@@ -10,7 +10,6 @@ import (
 // MintKeeper defines the expected interface for the Mint module.
 type MintKeeper interface {
 	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
-	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coin) error
 	// Methods imported from account should be defined here
 }
 
@@ -26,7 +25,7 @@ type BankKeeper interface {
 	SpendableCoins(context.Context, sdk.AccAddress) sdk.Coins
 	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-
+	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
 
