@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	fmt "fmt"
 	"math/big"
@@ -29,6 +30,15 @@ const (
 var ParamsKey = collections.NewPrefix("p_funds")
 
 var ClaimProcessedPrefix = collections.NewPrefix("funds/claim_processed/")
+var BurnNoncePrefix = collections.NewPrefix("funds/burn_nonce/")
+
+func BurnNonceKey(chainID uint64) []byte {
+
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, chainID)
+
+	return append(BurnNoncePrefix, bz...)
+}
 
 func ClaimProcessedKey(
 	chainID uint64,

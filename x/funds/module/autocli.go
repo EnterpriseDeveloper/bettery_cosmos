@@ -40,6 +40,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a mint-from-evm tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_sender"}, {ProtoField: "cosmos_receiver"}, {ProtoField: "amount"}, {ProtoField: "nonce"}, {ProtoField: "tx_hash"}, {ProtoField: "signatures", Varargs: true}},
 				},
+				{
+					RpcMethod:      "BurnToEvm",
+					Use:            "burn-to-evm [evm-chain-id] [evm-bridge] [evm-token] [evm-recipient] [amount]",
+					Short:          "Send a burn-to-evm tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_recipient"}, {ProtoField: "amount"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
