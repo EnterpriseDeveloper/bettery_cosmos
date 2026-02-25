@@ -8,7 +8,7 @@ managed:
   enabled: true
 plugins:
   - remote: buf.build/community/stephenh-ts-proto
-    out: /Users/voroshilovmax/Development/betme/bettery-front/tx/proto-ts
+    out: /Users/voroshilovmax/Development/betme/bettery_front/tx/proto-ts/
     opt:
       - logtostderr=true
       - allow_merge=true
@@ -17,7 +17,7 @@ plugins:
       - ts_proto_opt=esModuleInterop=true
       - ts_proto_out=.
   - remote: buf.build/protocolbuffers/python
-    out: /Users/voroshilovmax/Development/betme/bettery_validator
+    out: /Users/voroshilovmax/Development/betme/bettery_validator/proto
 
   - remote: buf.build/grpc/python
-    out: /Users/voroshilovmax/Development/betme/bettery_validator
+    out: /Users/voroshilovmax/Development/betme/bettery_validator/proto
