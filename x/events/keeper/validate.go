@@ -36,12 +36,14 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 			}
 			return companyFee, nil
 		} else {
+			// TODO: rebuild with safe Math
 			companyFee = totalPool * uint64(types.CompanyPercent) / 100
 			_, err := k.sendMoney(ctx, types.CompanyAddress, companyFee)
 			if err != nil {
 				return 0, err
 			}
 
+			// TODO: rebuild with safe Math
 			rewardPool := totalPool - companyFee
 			for _, p := range winUsers {
 				reward := rewardPool * p.Amount / winnerPool
