@@ -11,7 +11,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 
 	errorsmod "cosmossdk.io/errors"
-	sdkmath "cosmossdk.io/math"
 )
 
 func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*types.MsgBurnToEvmResponse, error) {
@@ -23,17 +22,39 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 		return nil, errorsmod.Wrap(nil, "invalid evm address")
 	}
 
-	amount, ok := sdkmath.NewIntFromString(msg.Amount)
-	if !ok {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("parse string to init error, amount: %s,", msg.Amount))
+	coin, err := sdk.ParseCoinNormalized(msg.Amount.String())
+	if err != nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrNotSupported, fmt.Sprintf("invalid amount: %s", err.Error()))
 	}
 
-	coin := sdk.NewCoin(
-		types.BetToken,
-		amount,
-	)
+	if !coin.IsPositive() {
+		return nil, errorsmod.Wrap(sdkerrors.ErrNotSupported, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
+	}
 
-	err := k.bankKeeper.BurnCoins(
+	sender, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, fmt.Sprintf("invalid creator address: %s", err.Error()))
+	}
+
+	sendAmount := msg.Amount.Amount.Uint64()
+
+	// check if user have enough balance for participate in event
+	resAmount := k.bankKeeper.GetBalance(ctx, sender, types.BetToken)
+	if sendAmount >= resAmount.Amount.Uint64() {
+		return nil, errorsmod.Wrap(sdkerrors.ErrInsufficientFunds, fmt.Sprintf("user does not have enough bet token, his amount: %s", resAmount.Amount.String()))
+	}
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(
+		ctx,
+		sender,
+		types.ModuleName,
+		sdk.NewCoins(coin),
+	)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "SendCoinsFromAccountToModule")
+	}
+
+	err = k.bankKeeper.BurnCoins(
 		ctx,
 		types.ModuleName,
 		sdk.NewCoins(coin),
@@ -44,7 +65,7 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 
 	diff := uint8(12)
 	divisor := pow10(diff)
-	normalizedAmount := amount.Mul(divisor)
+	normalizedAmount := msg.Amount.Amount.Mul(divisor)
 
 	nonce, err := k.GetNextBurnNonce(ctx, msg.EvmChainId)
 	if err != nil {
