@@ -17,6 +17,7 @@ func (k msgServer) MintFromEvm(ctx context.Context, msg *types.MsgMintFromEvm) (
 	if _, err := k.addressCodec.StringToBytes(msg.Creator); err != nil {
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
+	// TODO: IMPORTANT Add whitelisted msg.Creator
 
 	// TODO ADD LOGIC FOR SUPPORTED TOKEN
 	// if !k.IsSupportedToken(ctx, msg.EvmToken) {
@@ -31,13 +32,6 @@ func (k msgServer) MintFromEvm(ctx context.Context, msg *types.MsgMintFromEvm) (
 	if exist {
 		return nil, errorsmod.Wrap(nil, "claim already processed")
 	}
-
-	// TODO: IMPORTANT FOR SECURITY CHECK
-	//hash := types.HashClaim(msg)
-	// valid := k.VerifySignatures(ctx, hash, msg.Signatures)
-	// if !valid {
-	// 	return nil, errorsmod.Wrap(nil, "not enough valid signatures")
-	// }
 
 	receiver, err := sdk.AccAddressFromBech32(msg.CosmosReceiver)
 	if err != nil {

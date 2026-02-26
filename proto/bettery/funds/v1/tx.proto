@@ -82,7 +82,6 @@ message MsgMintFromEvm {
   string amount = 7;
   uint64 nonce = 8;
   string tx_hash = 9;
-  repeated bytes signatures = 10;
 }
 
 // MsgMintFromEvmResponse defines the MsgMintFromEvmResponse message.

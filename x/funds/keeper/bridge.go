@@ -8,33 +8,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 )
 
-// TODO think about security relayer: Proposition was adding at least three relayers and check signatures from them.
-// func (k Keeper) VerifySignatures(
-// 	ctx context.Context,
-// 	hash []byte,
-// 	signatures [][]byte,
-// ) bool {
-
-// 	params := k.GetParams(ctx)
-// 	validCount := 0
-
-// 	for _, sig := range signatures {
-
-// 		pubKey, err := secp256k1.RecoverPubkey(hash, sig)
-// 		if err != nil {
-// 			continue
-// 		}
-
-// 		addr := sdk.AccAddress(crypto.Keccak256(pubKey)[12:])
-
-// 		if k.IsRelayer(ctx, addr.String()) {
-// 			validCount++
-// 		}
-// 	}
-
-// 	return uint64(validCount) >= params.Threshold
-// }
-
 func (k Keeper) SetClaimProcessed(
 	ctx context.Context,
 	chainID uint64,
