@@ -96,7 +96,7 @@ message MsgBurnToEvm {
   string evm_bridge = 3;
   string evm_token = 4;
   string evm_recipient = 5;
-  cosmos.base.v1beta1.Coin amount = 6;
+  string amount = 6;
 }
 
 // MsgBurnToEvmResponse defines the MsgBurnToEvmResponse message.

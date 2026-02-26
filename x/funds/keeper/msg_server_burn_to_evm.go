@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 
 	errorsmod "cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 )
 
 func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*types.MsgBurnToEvmResponse, error) {
@@ -22,10 +23,15 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 		return nil, errorsmod.Wrap(nil, "invalid evm address")
 	}
 
-	coin, err := sdk.ParseCoinNormalized(msg.Amount.String())
-	if err != nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrNotSupported, fmt.Sprintf("invalid amount: %s", err.Error()))
+	amount, ok := sdkmath.NewIntFromString(msg.Amount)
+	if !ok {
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("parse string to init error, amount: %s,", msg.Amount))
 	}
+
+	coin := sdk.NewCoin(
+		types.BetToken,
+		amount,
+	)
 
 	if !coin.IsPositive() {
 		return nil, errorsmod.Wrap(sdkerrors.ErrNotSupported, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
@@ -36,7 +42,7 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidAddress, fmt.Sprintf("invalid creator address: %s", err.Error()))
 	}
 
-	sendAmount := msg.Amount.Amount.Uint64()
+	sendAmount := coin.Amount.Uint64()
 
 	// check if user have enough balance for participate in event
 	resAmount := k.bankKeeper.GetBalance(ctx, sender, types.BetToken)
@@ -65,7 +71,7 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 
 	diff := uint8(12)
 	divisor := pow10(diff)
-	normalizedAmount := msg.Amount.Amount.Mul(divisor)
+	normalizedAmount := coin.Amount.Mul(divisor)
 
 	nonce, err := k.GetNextBurnNonce(ctx, msg.EvmChainId)
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 
 	"bettery/x/events/types"
 
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -58,10 +59,15 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("user: %s already participate in event by id: %d", msg.Creator, msg.EventId))
 	}
 
-	coin, err := sdk.ParseCoinNormalized(msg.Amount.String())
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("invalid amount: %s", err.Error()))
+	amount, ok := sdkmath.NewIntFromString(msg.Amount)
+	if !ok {
+		return nil, status.Error(codes.Aborted, fmt.Sprintf("parse string to init error, amount: %s,", msg.Amount))
 	}
+
+	coin := sdk.NewCoin(
+		types.BetToken,
+		amount,
+	)
 
 	if !coin.IsPositive() {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
@@ -72,7 +78,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("invalid creator address: %s", err.Error()))
 	}
 
-	sendAmount := msg.Amount.Amount.Uint64()
+	sendAmount := coin.Amount.Uint64()
 
 	// check if user have enough balance for participate in event
 	resAmount := k.bankKeeper.GetBalance(ctx, sender, types.BetToken) // TODO check coins type for participate in event
@@ -95,7 +101,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		EventId:   msg.EventId,
 		Answer:    msg.Answers,
 		Amount:    sendAmount,
-		Token:     msg.Amount.Denom,
+		Token:     coin.Denom,
 		CreatedAt: uint64(timeNow),
 	}
 
