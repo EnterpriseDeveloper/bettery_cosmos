@@ -17,8 +17,7 @@ func (k msgServer) MintToken(ctx context.Context, msg *types.MsgMintToken) (*typ
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	// TODO: IMPORTANT Add whitelisted msg.Creator
-	// OR REMOVE FROM LOGIC. NOT ALLOWED IN PROD
+	// TODO IMPORTANT: REMOVE FROM PROD
 
 	fmt.Print(msg.Receiver)
 	fmt.Print(msg.Creator)

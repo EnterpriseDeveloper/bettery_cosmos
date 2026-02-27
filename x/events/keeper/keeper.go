@@ -24,6 +24,7 @@ type Keeper struct {
 
 	mintKeeper     types.MintKeeper
 	bankKeeper     types.BankKeeper
+	guardKeeper    types.GuardKeeper
 	EventsSeq      collections.Sequence
 	Events         collections.Map[uint64, types.Events]
 	ParticipantSeq collections.Sequence
@@ -40,6 +41,7 @@ func NewKeeper(
 
 	mintKeeper types.MintKeeper,
 	bankKeeper types.BankKeeper,
+	guardKeeper types.GuardKeeper,
 ) Keeper {
 	if _, err := addressCodec.BytesToString(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address %s: %s", authority, err))
@@ -55,6 +57,7 @@ func NewKeeper(
 
 		mintKeeper:     mintKeeper,
 		bankKeeper:     bankKeeper,
+		guardKeeper:    guardKeeper,
 		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		Events:         collections.NewMap(sb, types.EventsKeyPrefix, "events", collections.Uint64Key, codec.CollValue[types.Events](cdc)),
 		EventsSeq:      collections.NewSequence(sb, types.EventsCountKey, "eventsSequence"),

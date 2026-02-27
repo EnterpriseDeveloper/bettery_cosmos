@@ -18,7 +18,19 @@ func (k msgServer) ValidateEvent(ctx context.Context, msg *types.MsgValidateEven
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	// TODO: check user wallet. Only owner can execute this action.
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "parse creator address failed")
+	}
+
+	isOwner, err := k.guardKeeper.IsOwner(ctx, owner)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "IsOwner err")
+	}
+
+	if !isOwner {
+		return nil, errorsmod.Wrap(nil, "invalid owner")
+	}
 
 	// check if event exist
 	exist, err := k.HasCreateEvents(ctx, msg.EventId)

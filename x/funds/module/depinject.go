@@ -33,9 +33,10 @@ type ModuleInputs struct {
 	Cdc          codec.Codec
 	AddressCodec address.Codec
 
-	AuthKeeper types.AuthKeeper
-	BankKeeper types.BankKeeper
-	MintKeeper types.MintKeeper
+	AuthKeeper  types.AuthKeeper
+	BankKeeper  types.BankKeeper
+	MintKeeper  types.MintKeeper
+	GaurdKeeper types.GuardKeeper
 }
 
 type ModuleOutputs struct {
@@ -58,6 +59,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority,
 		in.MintKeeper,
 		in.BankKeeper,
+		in.GaurdKeeper,
 	)
 	m := NewAppModule(in.Cdc, k, in.AuthKeeper, in.BankKeeper)
 

@@ -35,3 +35,7 @@ type ParamSubspace interface {
 	Get(context.Context, []byte, interface{})
 	Set(context.Context, []byte, interface{})
 }
+
+type GuardKeeper interface {
+	IsOwner(ctx context.Context, addr sdk.AccAddress) (bool, error)
+}

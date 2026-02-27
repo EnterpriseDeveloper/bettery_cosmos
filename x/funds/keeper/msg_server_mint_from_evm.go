@@ -17,12 +17,20 @@ func (k msgServer) MintFromEvm(ctx context.Context, msg *types.MsgMintFromEvm) (
 	if _, err := k.addressCodec.StringToBytes(msg.Creator); err != nil {
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
-	// TODO: IMPORTANT Add whitelisted msg.Creator
 
-	// TODO ADD LOGIC FOR SUPPORTED TOKEN
-	// if !k.IsSupportedToken(ctx, msg.EvmToken) {
-	// 	return nil, errorsmod.Wrap(nil, "unsupported token")
-	// }
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "parse creator address failed")
+	}
+
+	isOwner, err := k.guardKeeper.IsOwner(ctx, owner)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "IsOwner err")
+	}
+
+	if !isOwner {
+		return nil, errorsmod.Wrap(nil, "invalid owner")
+	}
 
 	exist, err := k.IsClaimProcessed(ctx, msg.EvmChainId, msg.EvmBridge, msg.Nonce) // check if claim processed
 	if err != nil {
