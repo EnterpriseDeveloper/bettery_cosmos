@@ -17,10 +17,19 @@ func (k msgServer) MintToken(ctx context.Context, msg *types.MsgMintToken) (*typ
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	// TODO IMPORTANT: REMOVE FROM PROD
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "parse creator address failed")
+	}
 
-	fmt.Print(msg.Receiver)
-	fmt.Print(msg.Creator)
+	isOwner, err := k.guardKeeper.IsOwner(ctx, owner)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "IsOwner err")
+	}
+
+	if !isOwner {
+		return nil, errorsmod.Wrap(nil, "invalid owner")
+	}
 
 	has, err := k.HasMint(ctx, msg.Receiver)
 	if err != nil {
