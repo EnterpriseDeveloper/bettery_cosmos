@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) SetOwner(ctx context.Context, owner sdk.AccAddress) {
+func (k Keeper) SetNewOwner(ctx context.Context, owner sdk.AccAddress) {
 	store := k.storeService.OpenKVStore(ctx)
 	store.Set([]byte("owner"), owner.Bytes())
 }
@@ -21,4 +21,15 @@ func (k Keeper) GetOwner(ctx context.Context) (sdk.AccAddress, error) {
 		return nil, nil
 	}
 	return sdk.AccAddress(bz), nil
+}
+
+func (k Keeper) IsOwner(ctx context.Context, addr sdk.AccAddress) (bool, error) {
+	owner, err := k.GetOwner(ctx)
+	if err != nil {
+		return false, err
+	}
+	if owner == nil {
+		return false, nil
+	}
+	return addr.Equals(owner), nil
 }
