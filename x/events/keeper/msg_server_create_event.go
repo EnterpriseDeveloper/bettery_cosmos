@@ -30,6 +30,7 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		Category:    msg.Category,
 		Status:      types.ActiveEvent,
 		AnswersPool: make([]uint64, len(msg.Answers)),
+		RoomId:      msg.RoomId,
 	}
 
 	if createEvent.EndTime < createEvent.StartTime {
@@ -55,6 +56,7 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 			sdk.NewAttribute("endTime", fmt.Sprintf("%d", createEvent.EndTime)),
 			sdk.NewAttribute("category", createEvent.Category),
 			sdk.NewAttribute("status", createEvent.Status),
+			sdk.NewAttribute("roomId", createEvent.RoomId),
 		),
 	)
 

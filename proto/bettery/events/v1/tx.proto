@@ -58,6 +58,7 @@ message MsgCreateEvent {
   repeated string answers = 3;
   uint64 end_time = 4;
   string category = 5;
+  string room_id = 6;
 }
 
 // MsgCreateEventResponse defines the MsgCreateEventResponse message.
