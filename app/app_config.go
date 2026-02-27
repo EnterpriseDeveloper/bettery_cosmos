@@ -5,6 +5,8 @@ import (
 	eventsmoduletypes "bettery/x/events/types"
 	_ "bettery/x/funds/module"
 	fundsmoduletypes "bettery/x/funds/types"
+	_ "bettery/x/guard/module"
+	guardmoduletypes "bettery/x/guard/types"
 	"time"
 
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
@@ -130,6 +132,7 @@ var (
 						// chain modules
 						fundsmoduletypes.ModuleName,
 						eventsmoduletypes.ModuleName,
+						guardmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/beginBlockers
 					},
 					EndBlockers: []string{
@@ -140,6 +143,7 @@ var (
 						// chain modules
 						fundsmoduletypes.ModuleName,
 						eventsmoduletypes.ModuleName,
+						guardmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/endBlockers
 					},
 					// The following is mostly only needed when ModuleName != StoreKey name.
@@ -178,6 +182,7 @@ var (
 						// chain modules
 						fundsmoduletypes.ModuleName,
 						eventsmoduletypes.ModuleName,
+						guardmoduletypes.ModuleName,
 						// this line is used by starport scaffolding # stargate/app/initGenesis
 					},
 				}),
@@ -281,6 +286,10 @@ var (
 			{
 				Name:   eventsmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&eventsmoduletypes.Module{}),
+			},
+			{
+				Name:   guardmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&guardmoduletypes.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

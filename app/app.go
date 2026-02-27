@@ -49,6 +49,7 @@ import (
 	"bettery/docs"
 	eventsmodulekeeper "bettery/x/events/keeper"
 	fundsmodulekeeper "bettery/x/funds/keeper"
+	guardmodulekeeper "bettery/x/guard/keeper"
 )
 
 const (
@@ -104,6 +105,7 @@ type App struct {
 	sm           *module.SimulationManager
 	FundsKeeper  fundsmodulekeeper.Keeper
 	EventsKeeper eventsmodulekeeper.Keeper
+	GuardKeeper  guardmodulekeeper.Keeper
 }
 
 func init() {
@@ -178,6 +180,7 @@ func New(
 		&app.ParamsKeeper,
 		&app.FundsKeeper,
 		&app.EventsKeeper,
+		&app.GuardKeeper,
 	); err != nil {
 		panic(err)
 	}
