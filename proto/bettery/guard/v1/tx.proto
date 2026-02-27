@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package bettery.guard.v1;
 
 import "amino/amino.proto";
@@ -16,6 +17,9 @@ service Msg {
   // UpdateParams defines a (governance) operation for updating the module
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // ChangeOwner defines the ChangeOwner RPC.
+  rpc ChangeOwner(MsgChangeOwner) returns (MsgChangeOwnerResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -27,7 +31,7 @@ message MsgUpdateParams {
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
-  //
+
   // NOTE: All parameters must be supplied.
   Params params = 2 [
     (gogoproto.nullable) = false,
@@ -38,3 +42,13 @@ message MsgUpdateParams {
 // MsgUpdateParamsResponse defines the response structure for executing a
 // MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
+
+// MsgChangeOwner defines the MsgChangeOwner message.
+message MsgChangeOwner {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string address = 2;
+}
+
+// MsgChangeOwnerResponse defines the MsgChangeOwnerResponse message.
+message MsgChangeOwnerResponse {}
