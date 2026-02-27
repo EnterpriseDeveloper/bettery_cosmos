@@ -46,12 +46,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a burn-to-evm tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_recipient"}, {ProtoField: "amount"}},
 				},
-				{
-					RpcMethod:      "SetOwner",
-					Use:            "set-owner ",
-					Short:          "Send a set-owner tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
-				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

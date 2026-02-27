@@ -7,9 +7,6 @@ import (
 )
 
 func RegisterInterfaces(registrar codectypes.InterfaceRegistry) {
-	registrar.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgSetOwner{},
-	)
 
 	registrar.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgBurnToEvm{},

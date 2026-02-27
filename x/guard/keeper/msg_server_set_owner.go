@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"bettery/x/funds/types"
+	"bettery/x/guard/types"
 
 	errorsmod "cosmossdk.io/errors"
 )

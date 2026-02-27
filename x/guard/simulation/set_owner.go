@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"bettery/x/funds/keeper"
-	"bettery/x/funds/types"
+	"bettery/x/guard/keeper"
+	"bettery/x/guard/types"
 )
 
 func SimulateMsgSetOwner(

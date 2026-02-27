@@ -18,6 +18,9 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
+  // SetOwner defines the SetOwner RPC.
+  rpc SetOwner(MsgSetOwner) returns (MsgSetOwnerResponse);
+
   // ChangeOwner defines the ChangeOwner RPC.
   rpc ChangeOwner(MsgChangeOwner) returns (MsgChangeOwnerResponse);
 }
@@ -52,3 +55,12 @@ message MsgChangeOwner {
 
 // MsgChangeOwnerResponse defines the MsgChangeOwnerResponse message.
 message MsgChangeOwnerResponse {}
+
+// MsgSetOwner defines the MsgSetOwner message.
+message MsgSetOwner {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgSetOwnerResponse defines the MsgSetOwnerResponse message.
+message MsgSetOwnerResponse {}
