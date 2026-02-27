@@ -50,6 +50,10 @@ import (
 	eventsmodulekeeper "bettery/x/events/keeper"
 	fundsmodulekeeper "bettery/x/funds/keeper"
 	guardmodulekeeper "bettery/x/guard/keeper"
+
+	appante "bettery/app/ante"
+
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 )
 
 const (
@@ -216,7 +220,7 @@ func New(
 			return nil, err
 		}
 		app.BankKeeper.SetDenomMetaData(ctx, banktypes.Metadata{
-			Name:        "Bettery Token",
+			Name:        "BetMe Token",
 			Symbol:      "BET",
 			Base:        "ubet",
 			Display:     "BET",
@@ -228,6 +232,16 @@ func New(
 		})
 		return app.App.InitChainer(ctx, req)
 	})
+
+	anteHandler, err := appante.NewAnteHandler(appante.HandlerOptions{
+		AccountKeeper:  app.AuthKeeper,
+		SigGasConsumer: ante.DefaultSigVerificationGasConsumer,
+		TxConfig:       app.txConfig,
+	})
+	if err != nil {
+		panic(err)
+	}
+	app.SetAnteHandler(anteHandler)
 
 	if err := app.Load(loadLatest); err != nil {
 		panic(err)
