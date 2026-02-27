@@ -27,6 +27,9 @@ service Msg {
 
   // BurnToEvm defines the BurnToEvm RPC.
   rpc BurnToEvm(MsgBurnToEvm) returns (MsgBurnToEvmResponse);
+
+  // SetOwner defines the SetOwner RPC.
+  rpc SetOwner(MsgSetOwner) returns (MsgSetOwnerResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -100,3 +103,12 @@ message MsgBurnToEvm {
 
 // MsgBurnToEvmResponse defines the MsgBurnToEvmResponse message.
 message MsgBurnToEvmResponse {}
+
+// MsgSetOwner defines the MsgSetOwner message.
+message MsgSetOwner {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgSetOwnerResponse defines the MsgSetOwnerResponse message.
+message MsgSetOwnerResponse {}
