@@ -36,9 +36,9 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				},
 				{
 					RpcMethod:      "MintFromEvm",
-					Use:            "mint-from-evm [evm-chain-id] [evm-bridge] [evm-token] [evm-sender] [cosmos-receiver] [amount] [nonce] [tx-hash] [signatures]",
+					Use:            "mint-from-evm [evm-chain-id] [evm-bridge] [evm-token] [evm-sender] [cosmos-receiver] [amount] [nonce] [tx-hash]",
 					Short:          "Send a mint-from-evm tx",
-					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_sender"}, {ProtoField: "cosmos_receiver"}, {ProtoField: "amount"}, {ProtoField: "nonce"}, {ProtoField: "tx_hash"}, {ProtoField: "signatures", Varargs: true}},
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_sender"}, {ProtoField: "cosmos_receiver"}, {ProtoField: "amount"}, {ProtoField: "nonce"}, {ProtoField: "tx_hash"}},
 				},
 				{
 					RpcMethod:      "BurnToEvm",
