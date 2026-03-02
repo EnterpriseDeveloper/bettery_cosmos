@@ -25,7 +25,7 @@ func SimulateMsgSetOwner(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the SetOwner simulation
+		// todo: Handle the SetOwner simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "SetOwner simulation not implemented"), nil, nil
 	}

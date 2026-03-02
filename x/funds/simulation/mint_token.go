@@ -25,7 +25,7 @@ func SimulateMsgMintToken(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the MintToken simulation
+		// todo: Handle the MintToken simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "MintToken simulation not implemented"), nil, nil
 	}

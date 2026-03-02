@@ -25,7 +25,7 @@ func SimulateMsgCreatePartEvent(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the CreatePartEvent simulation
+		// todo: Handle the CreatePartEvent simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "CreatePartEvent simulation not implemented"), nil, nil
 	}

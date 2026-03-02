@@ -25,7 +25,7 @@ func SimulateMsgBurnToEvm(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the BurnToEvm simulation
+		// todo: Handle the BurnToEvm simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "BurnToEvm simulation not implemented"), nil, nil
 	}

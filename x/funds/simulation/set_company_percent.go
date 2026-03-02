@@ -25,7 +25,7 @@ func SimulateMsgSetCompanyPercent(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the SetCompanyPercent simulation
+		// todo: Handle the SetCompanyPercent simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "SetCompanyPercent simulation not implemented"), nil, nil
 	}

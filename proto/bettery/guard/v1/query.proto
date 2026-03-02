@@ -1,9 +1,11 @@
 syntax = "proto3";
+
 package bettery.guard.v1;
 
 import "amino/amino.proto";
 import "bettery/guard/v1/params.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
@@ -14,6 +16,11 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/bettery/guard/v1/params";
+  }
+
+  // GetOwner Queries a list of GetOwner items.
+  rpc GetOwner(QueryGetOwnerRequest) returns (QueryGetOwnerResponse) {
+    option (google.api.http).get = "/bettery/guard/v1/get_owner";
   }
 }
 
@@ -27,4 +34,12 @@ message QueryParamsResponse {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+}
+
+// QueryGetOwnerRequest defines the QueryGetOwnerRequest message.
+message QueryGetOwnerRequest {}
+
+// QueryGetOwnerResponse defines the QueryGetOwnerResponse message.
+message QueryGetOwnerResponse {
+  string owner = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }

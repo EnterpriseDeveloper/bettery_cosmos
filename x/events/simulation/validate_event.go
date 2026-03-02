@@ -25,7 +25,7 @@ func SimulateMsgValidateEvent(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the ValidateEvent simulation
+		// todo: Handle the ValidateEvent simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "ValidateEvent simulation not implemented"), nil, nil
 	}

@@ -25,7 +25,7 @@ func SimulateMsgMintFromEvm(
 			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handle the MintFromEvm simulation
+		// todo: Handle the MintFromEvm simulation
 
 		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "MintFromEvm simulation not implemented"), nil, nil
 	}
