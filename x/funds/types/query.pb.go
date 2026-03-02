@@ -115,34 +115,123 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+// QueryGetPercentRequest defines the QueryGetPercentRequest message.
+type QueryGetPercentRequest struct {
+}
+
+func (m *QueryGetPercentRequest) Reset()         { *m = QueryGetPercentRequest{} }
+func (m *QueryGetPercentRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPercentRequest) ProtoMessage()    {}
+func (*QueryGetPercentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5219025dfe857a2, []int{2}
+}
+func (m *QueryGetPercentRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPercentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPercentRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPercentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPercentRequest.Merge(m, src)
+}
+func (m *QueryGetPercentRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPercentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPercentRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPercentRequest proto.InternalMessageInfo
+
+// QueryGetPercentResponse defines the QueryGetPercentResponse message.
+type QueryGetPercentResponse struct {
+	Percent uint64 `protobuf:"varint,1,opt,name=percent,proto3" json:"percent,omitempty"`
+}
+
+func (m *QueryGetPercentResponse) Reset()         { *m = QueryGetPercentResponse{} }
+func (m *QueryGetPercentResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetPercentResponse) ProtoMessage()    {}
+func (*QueryGetPercentResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e5219025dfe857a2, []int{3}
+}
+func (m *QueryGetPercentResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetPercentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetPercentResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetPercentResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetPercentResponse.Merge(m, src)
+}
+func (m *QueryGetPercentResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetPercentResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetPercentResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetPercentResponse proto.InternalMessageInfo
+
+func (m *QueryGetPercentResponse) GetPercent() uint64 {
+	if m != nil {
+		return m.Percent
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "bettery.funds.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "bettery.funds.v1.QueryParamsResponse")
+	proto.RegisterType((*QueryGetPercentRequest)(nil), "bettery.funds.v1.QueryGetPercentRequest")
+	proto.RegisterType((*QueryGetPercentResponse)(nil), "bettery.funds.v1.QueryGetPercentResponse")
 }
 
 func init() { proto.RegisterFile("bettery/funds/v1/query.proto", fileDescriptor_e5219025dfe857a2) }
 
 var fileDescriptor_e5219025dfe857a2 = []byte{
-	// 303 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x49, 0x4a, 0x2d, 0x29,
-	0x49, 0x2d, 0xaa, 0xd4, 0x4f, 0x2b, 0xcd, 0x4b, 0x29, 0xd6, 0x2f, 0x33, 0xd4, 0x2f, 0x2c, 0x4d,
-	0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x80, 0xca, 0xea, 0x81, 0x65, 0xf5,
-	0xca, 0x0c, 0xa5, 0x04, 0x13, 0x73, 0x33, 0xf3, 0xf2, 0xf5, 0xc1, 0x24, 0x44, 0x91, 0x94, 0x2c,
-	0x86, 0x11, 0x05, 0x89, 0x45, 0x89, 0xb9, 0xc5, 0x50, 0x69, 0xad, 0xe4, 0xfc, 0xe2, 0xdc, 0xfc,
-	0x62, 0xfd, 0xa4, 0xc4, 0xe2, 0x54, 0x88, 0xe1, 0xfa, 0x65, 0x86, 0x49, 0xa9, 0x25, 0x89, 0x20,
-	0x75, 0xe9, 0x99, 0x79, 0x89, 0x25, 0x99, 0xf9, 0x79, 0x50, 0xb5, 0x22, 0xe9, 0xf9, 0xe9, 0xf9,
-	0x60, 0xa6, 0x3e, 0x88, 0x05, 0x15, 0x95, 0x49, 0xcf, 0xcf, 0x4f, 0xcf, 0x49, 0xd5, 0x4f, 0x2c,
-	0xc8, 0xd4, 0x4f, 0xcc, 0xcb, 0xcb, 0x2f, 0x01, 0x6b, 0x81, 0x9a, 0xaf, 0x24, 0xc2, 0x25, 0x14,
-	0x08, 0x32, 0x35, 0x00, 0x6c, 0x69, 0x50, 0x6a, 0x61, 0x69, 0x6a, 0x71, 0x89, 0x52, 0x10, 0x97,
-	0x30, 0x8a, 0x68, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x90, 0x35, 0x17, 0x1b, 0xc4, 0x71, 0x12,
-	0x8c, 0x0a, 0x8c, 0x1a, 0xdc, 0x46, 0x12, 0x7a, 0xe8, 0x3e, 0xd4, 0x83, 0xe8, 0x70, 0xe2, 0x3c,
-	0x71, 0x4f, 0x9e, 0x61, 0xc5, 0xf3, 0x0d, 0x5a, 0x8c, 0x41, 0x50, 0x2d, 0x46, 0x0d, 0x8c, 0x5c,
-	0xac, 0x60, 0x43, 0x85, 0xca, 0xb9, 0xd8, 0x20, 0xca, 0x84, 0x54, 0x30, 0x0d, 0xc0, 0x74, 0x8d,
-	0x94, 0x2a, 0x01, 0x55, 0x10, 0xd7, 0x29, 0x29, 0x34, 0x5d, 0x7e, 0x32, 0x99, 0x49, 0x4a, 0x48,
-	0x42, 0x1f, 0x47, 0x90, 0x3a, 0xe9, 0x9f, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83,
-	0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43,
-	0x94, 0x28, 0x4c, 0x4b, 0x05, 0x54, 0x53, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0x90,
-	0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x94, 0xcc, 0x36, 0xc2, 0xe8, 0x01, 0x00, 0x00,
+	// 369 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x51, 0x3f, 0x4b, 0xf3, 0x40,
+	0x18, 0x4f, 0xca, 0xfb, 0xf6, 0xe5, 0x3d, 0x17, 0x3d, 0xab, 0x86, 0xd0, 0xa6, 0x25, 0x58, 0xa8,
+	0x1d, 0x72, 0xb4, 0x1d, 0xdd, 0xba, 0xb8, 0xd6, 0x8c, 0x2e, 0x72, 0xa9, 0x8f, 0x21, 0x60, 0xef,
+	0xd2, 0xdc, 0xb5, 0xda, 0xd5, 0x49, 0x70, 0x11, 0xfc, 0x12, 0x8e, 0x7e, 0x8c, 0x8e, 0x05, 0x17,
+	0x27, 0x91, 0x56, 0xf0, 0x6b, 0x48, 0xef, 0xae, 0x88, 0x86, 0xa2, 0x4b, 0xb8, 0x3c, 0xbf, 0xbf,
+	0xcf, 0x1d, 0x2a, 0x47, 0x20, 0x25, 0x64, 0x13, 0x72, 0x3e, 0x62, 0x67, 0x82, 0x8c, 0x5b, 0x64,
+	0x38, 0x82, 0x6c, 0x12, 0xa4, 0x19, 0x97, 0x1c, 0x6f, 0x1a, 0x34, 0x50, 0x68, 0x30, 0x6e, 0xb9,
+	0x5b, 0x74, 0x90, 0x30, 0x4e, 0xd4, 0x57, 0x93, 0xdc, 0x4a, 0xce, 0x22, 0xa5, 0x19, 0x1d, 0x08,
+	0x03, 0x37, 0xfb, 0x5c, 0x0c, 0xb8, 0x20, 0x11, 0x15, 0xa0, 0xcd, 0xc9, 0xb8, 0x15, 0x81, 0xa4,
+	0x4b, 0x5e, 0x9c, 0x30, 0x2a, 0x13, 0xce, 0x0c, 0xb7, 0x14, 0xf3, 0x98, 0xab, 0x23, 0x59, 0x9e,
+	0xcc, 0xb4, 0x1c, 0x73, 0x1e, 0x5f, 0x00, 0xa1, 0x69, 0x42, 0x28, 0x63, 0x5c, 0x2a, 0x89, 0xf1,
+	0xf7, 0x4b, 0x08, 0x1f, 0x2f, 0x5d, 0x7b, 0x2a, 0x34, 0x84, 0xe1, 0x08, 0x84, 0xf4, 0x43, 0xb4,
+	0xfd, 0x65, 0x2a, 0x52, 0xce, 0x04, 0xe0, 0x43, 0x54, 0xd4, 0xe5, 0x1c, 0xbb, 0x66, 0x37, 0x36,
+	0xda, 0x4e, 0xf0, 0x7d, 0xc3, 0x40, 0x2b, 0xba, 0xff, 0xa7, 0x2f, 0x55, 0xeb, 0xe1, 0xfd, 0xb1,
+	0x69, 0x87, 0x46, 0xe2, 0x3b, 0x68, 0x57, 0x79, 0x1e, 0x81, 0xec, 0x41, 0xd6, 0x07, 0x26, 0x57,
+	0x69, 0x1d, 0xb4, 0x97, 0x43, 0x4c, 0xa2, 0x83, 0xfe, 0xa5, 0x7a, 0xa4, 0x22, 0xff, 0x84, 0xab,
+	0xdf, 0xf6, 0x6d, 0x01, 0xfd, 0x55, 0x2a, 0x7c, 0x89, 0x8a, 0x3a, 0x15, 0xef, 0xe7, 0xfb, 0xe4,
+	0x97, 0x73, 0xeb, 0x3f, 0xb0, 0x74, 0xb4, 0x5f, 0xbb, 0x7e, 0x7a, 0xbb, 0x2f, 0xb8, 0xd8, 0x21,
+	0x6b, 0x5e, 0x08, 0xdf, 0xd8, 0x08, 0x7d, 0x76, 0xc6, 0x8d, 0x35, 0xbe, 0xb9, 0x85, 0xdd, 0x83,
+	0x5f, 0x30, 0x4d, 0x8b, 0xba, 0x6a, 0x51, 0xc5, 0x95, 0x7c, 0x8b, 0x18, 0xe4, 0xa9, 0xb9, 0x8d,
+	0x2e, 0x99, 0xce, 0x3d, 0x7b, 0x36, 0xf7, 0xec, 0xd7, 0xb9, 0x67, 0xdf, 0x2d, 0x3c, 0x6b, 0xb6,
+	0xf0, 0xac, 0xe7, 0x85, 0x67, 0x9d, 0xec, 0xac, 0x74, 0x57, 0x46, 0x29, 0x27, 0x29, 0x88, 0xa8,
+	0xa8, 0x9e, 0xbf, 0xf3, 0x11, 0x00, 0x00, 0xff, 0xff, 0xe7, 0xda, 0x19, 0xe9, 0xc2, 0x02, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -159,6 +248,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// GetPercent Queries a list of GetPercent items.
+	GetPercent(ctx context.Context, in *QueryGetPercentRequest, opts ...grpc.CallOption) (*QueryGetPercentResponse, error)
 }
 
 type queryClient struct {
@@ -178,10 +269,21 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) GetPercent(ctx context.Context, in *QueryGetPercentRequest, opts ...grpc.CallOption) (*QueryGetPercentResponse, error) {
+	out := new(QueryGetPercentResponse)
+	err := c.cc.Invoke(ctx, "/bettery.funds.v1.Query/GetPercent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// GetPercent Queries a list of GetPercent items.
+	GetPercent(context.Context, *QueryGetPercentRequest) (*QueryGetPercentResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -190,6 +292,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) GetPercent(ctx context.Context, req *QueryGetPercentRequest) (*QueryGetPercentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPercent not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -214,6 +319,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetPercent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetPercentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetPercent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/bettery.funds.v1.Query/GetPercent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetPercent(ctx, req.(*QueryGetPercentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "bettery.funds.v1.Query",
@@ -222,6 +345,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "GetPercent",
+			Handler:    _Query_GetPercent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -284,6 +411,57 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetPercentRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPercentRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPercentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetPercentResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetPercentResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetPercentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Percent != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Percent))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -312,6 +490,27 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryGetPercentRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryGetPercentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Percent != 0 {
+		n += 1 + sovQuery(uint64(m.Percent))
+	}
 	return n
 }
 
@@ -433,6 +632,125 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPercentRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPercentRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPercentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetPercentResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetPercentResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetPercentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Percent", wireType)
+			}
+			m.Percent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Percent |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
