@@ -41,8 +41,9 @@ func EventKey(id uint64) []byte {
 }
 
 var (
-	ParticipantKeyPrefix = collections.NewPrefix("participant/value/")
-	ParticipantCountKey  = collections.NewPrefix("participant/count/")
+	ParticipantKeyPrefix       = collections.NewPrefix("participant/value/")
+	ParticipantCountKey        = collections.NewPrefix("participant/count/")
+	ParticipantEventIdIndexKey = collections.NewPrefix("participant/event_id_value/")
 )
 
 func ParticipantKey(id uint64) []byte {

@@ -4,7 +4,10 @@ import (
 	"bettery/x/events/types"
 	"context"
 	"encoding/binary"
+	"errors"
 	"slices"
+
+	"cosmossdk.io/collections"
 )
 
 func (k Keeper) findPartEvent(
@@ -12,32 +15,28 @@ func (k Keeper) findPartEvent(
 	eventId uint64,
 	creator string,
 ) (bool, error) {
-	store := k.storeService.OpenKVStore(ctx)
-	var event types.Events
-	data, err := store.Get(types.EventKey(eventId))
+	event, err := k.Events.Get(ctx, eventId)
 	if err != nil {
+		if errors.Is(err, collections.ErrNotFound) {
+			return false, nil
+		}
 		return false, err
 	}
-	k.cdc.MustUnmarshal(data, &event)
-	if slices.Contains(event.Participants, creator) {
-		return true, nil
-	}
-	return false, nil
+	return slices.Contains(event.Participants, creator), nil
 }
 
 func (k Keeper) AppendParticipant(
 	ctx context.Context,
 	event types.Participant,
 ) (uint64, error) {
-	store := k.storeService.OpenKVStore(ctx)
-	id, err := k.GetParticipantCount(ctx)
+	id, err := k.ParticipantSeq.Next(ctx)
 	if err != nil {
 		return 0, err
 	}
 	event.Id = id
-	appendedValue := k.cdc.MustMarshal(&event)
-	store.Set(types.ParticipantKey(event.Id), appendedValue)
-	k.SetParticipantCount(ctx, id+1)
+	if err := k.Participant.Set(ctx, id, event); err != nil {
+		return 0, err
+	}
 
 	_, err = k.updateEventFromParticipant(ctx, event)
 	if err != nil {
@@ -48,11 +47,10 @@ func (k Keeper) AppendParticipant(
 }
 
 func (k Keeper) updateParticipantFromValidator(ctx context.Context, participant types.Participant, amount uint64) (bool, error) {
-	store := k.storeService.OpenKVStore(ctx)
-
 	participant.Result = amount
-	appendedValue := k.cdc.MustMarshal(&participant)
-	store.Set(types.ParticipantKey(participant.Id), appendedValue)
+	if err := k.Participant.Set(ctx, participant.Id, participant); err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -70,16 +68,7 @@ func (k Keeper) GetParticipantCount(ctx context.Context) (uint64, error) {
 	return binary.BigEndian.Uint64(bz), nil
 }
 
-func (k Keeper) SetParticipantCount(ctx context.Context, count uint64) {
-	store := k.storeService.OpenKVStore(ctx)
-
-	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, count)
-
-	store.Set(types.ParticipantCountKey, bz)
-}
-
-func (k Keeper) GetParticipantsByEvent(
+func (k Keeper) GetParticipantsByEventWithIndex(
 	ctx context.Context,
 	eventId uint64,
 	answer string,
@@ -90,19 +79,23 @@ func (k Keeper) GetParticipantsByEvent(
 	totalPool := uint64(0)
 	winnersPool := uint64(0)
 
-	// TODO think about index for participants by event id for optimization
-	err := k.Participant.Walk(
+	err := k.Participant.Indexes.EventId.Walk(
 		ctx,
-		nil,
-		func(_ uint64, p types.Participant) (bool, error) {
-			if p.EventId == eventId {
-				totalPool += p.Amount
-				allUsers = append(allUsers, p)
-				if p.Answer == answer {
-					winUsers = append(winUsers, p)
-					winnersPool += p.Amount
-				}
+		collections.NewPrefixedPairRange[uint64, uint64](eventId),
+		func(indexingKey uint64, primaryKey uint64) (bool, error) {
+			p, err := k.Participant.Get(ctx, primaryKey)
+			if err != nil {
+				return true, err
 			}
+
+			totalPool += p.Amount
+			allUsers = append(allUsers, p)
+
+			if p.Answer == answer {
+				winUsers = append(winUsers, p)
+				winnersPool += p.Amount
+			}
+
 			return false, nil
 		},
 	)

@@ -14,7 +14,7 @@ import (
 )
 
 func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64, error) {
-	_, winUsers, totalPool, winnerPool, err := k.GetParticipantsByEvent(ctx, data.EventId, data.Answer)
+	_, winUsers, totalPool, winnerPool, err := k.GetParticipantsByEventWithIndex(ctx, data.EventId, data.Answer)
 	if err != nil {
 		return 0, err
 	}
@@ -95,7 +95,7 @@ func (k Keeper) letsPayWinners(ctx context.Context, data types.Validator, totalP
 }
 
 func (k Keeper) refundEvent(ctx context.Context, msg types.Validator) (uint64, error) {
-	allUsers, _, totalPool, _, err := k.GetParticipantsByEvent(ctx, msg.EventId, msg.Answer)
+	allUsers, _, totalPool, _, err := k.GetParticipantsByEventWithIndex(ctx, msg.EventId, msg.Answer)
 	if err != nil {
 		return 0, err
 	}

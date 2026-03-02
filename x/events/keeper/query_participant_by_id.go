@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// TODO: Move to DB for future optimization if needed
+// TODO: Move to DB for future optimization
 func (q queryServer) ParticipantById(ctx context.Context, req *types.QueryParticipantByIdRequest) (*types.QueryParticipantByIdResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

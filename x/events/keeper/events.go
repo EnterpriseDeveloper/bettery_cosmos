@@ -131,7 +131,7 @@ func indexOf(slice []string, target string) int {
 	return -1 // not found
 }
 
-// TODO optimizate for larger data, or move to traditional DB
+// TODO move to traditional DB for optimization
 func (k Keeper) GetEventsForValidation(ctx context.Context) ([]types.Events, error) {
 	var events []types.Events
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
