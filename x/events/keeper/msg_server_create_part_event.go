@@ -69,7 +69,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		amount,
 	)
 
-	if !coin.IsPositive() {
+	if coin.Amount.Int64() >= 0 {
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
 	}
 
@@ -81,7 +81,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 	sendAmount := coin.Amount.Uint64()
 
 	// check if user have enough balance for participate in event
-	resAmount := k.bankKeeper.GetBalance(ctx, sender, types.BetToken) // TODO check coins type for participate in event
+	resAmount := k.bankKeeper.GetBalance(ctx, sender, types.BetToken)
 	if sendAmount >= resAmount.Amount.Uint64() {
 		return nil, status.Error(codes.Unknown, fmt.Sprintf("user does not have enough bet token, his amount: %s", resAmount.Amount.String()))
 	}

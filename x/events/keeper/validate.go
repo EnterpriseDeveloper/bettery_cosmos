@@ -4,20 +4,21 @@ import (
 	"bettery/x/events/types"
 	"context"
 	"encoding/binary"
+	"fmt"
 	"strconv"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64, error) {
-	allUsers, winUsers, totalPool, winnerPool, err := k.GetParticipantsByEvent(ctx, data.EventId, data.Answer)
+	_, winUsers, totalPool, winnerPool, err := k.GetParticipantsByEvent(ctx, data.EventId, data.Answer)
 	if err != nil {
 		return 0, err
 	}
-	var companyFee uint64 = 0
-	if len(allUsers) != 0 {
+	if totalPool != 0 {
 		if len(winUsers) == 0 && totalPool > 0 {
 			_, err := k.sendMoney(ctx, types.CompanyAddress, totalPool)
 			if err != nil {
@@ -28,40 +29,12 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 			if err != nil {
 				return 0, err
 			}
-			return companyFee, nil
-		} else if len(allUsers)-len(winUsers) == 0 {
-			_, err := k.refundEvent(ctx, data)
-			if err != nil {
-				return 0, err
-			}
-			return companyFee, nil
+			return totalPool, nil
+		} else if len(winUsers) != 0 && totalPool > 0 {
+			return k.letsPayWinners(ctx, data, totalPool, winnerPool, winUsers)
 		} else {
-			// TODO: rebuild with safe Math
-			companyFee = totalPool * uint64(types.CompanyPercent) / 100
-			_, err := k.sendMoney(ctx, types.CompanyAddress, companyFee)
-			if err != nil {
-				return 0, err
-			}
-
-			// TODO: rebuild with safe Math
-			rewardPool := totalPool - companyFee
-			for _, p := range winUsers {
-				reward := rewardPool * p.Amount / winnerPool
-				_, err := k.sendMoney(ctx, p.Creator, reward)
-				if err != nil {
-					return 0, err
-				}
-
-				_, err = k.updateParticipantFromValidator(ctx, p, reward)
-				if err != nil {
-					return 0, err
-				}
-			}
-			_, err = k.AppendValidator(ctx, data, strconv.FormatUint(companyFee, 10), false)
-			if err != nil {
-				return 0, err
-			}
-			return companyFee, nil
+			fmt.Println("------------NO CONDITION---------") // TODO CHECK WITH TEST
+			return 0, nil
 		}
 
 	} else {
@@ -69,20 +42,56 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 		if err != nil {
 			return 0, err
 		}
-		return companyFee, nil
+		return 0, nil
 	}
 }
 
-func (k Keeper) refundEvent(ctx context.Context, msg types.Validator) (uint64, error) {
-	allUsers, _, _, _, err := k.GetParticipantsByEvent(ctx, msg.EventId, msg.Answer)
+func (k Keeper) letsPayWinners(ctx context.Context, data types.Validator, totalPool uint64, winnerPool uint64, winUsers []types.Participant) (uint64, error) {
+	totalPoolSafe := sdkmath.NewIntFromUint64(totalPool)
+	winnerPoolSafe := sdkmath.NewIntFromUint64(winnerPool)
+	CompanyPercentSafe := sdkmath.NewIntFromUint64(uint64(types.CompanyPercent))
+
+	companyFeeSafe := totalPoolSafe.Mul(CompanyPercentSafe).Quo(sdkmath.NewInt(100))
+	_, err := k.sendMoney(ctx, types.CompanyAddress, companyFeeSafe.Uint64())
 	if err != nil {
 		return 0, err
 	}
-	if len(allUsers) != 0 {
+
+	rewardPool := totalPoolSafe.Sub(companyFeeSafe)
+	for _, p := range winUsers {
+		amount := sdkmath.NewIntFromUint64(p.Amount)
+		rewardSafe := rewardPool.Mul(amount).Quo(winnerPoolSafe)
+
+		_, err := k.sendMoney(ctx, p.Creator, rewardSafe.Uint64())
+		if err != nil {
+			return 0, err
+		}
+
+		_, err = k.updateParticipantFromValidator(ctx, p, rewardSafe.Uint64())
+		if err != nil {
+			return 0, err
+		}
+	}
+	_, err = k.AppendValidator(ctx, data, strconv.FormatUint(companyFeeSafe.Uint64(), 10), false)
+	if err != nil {
+		return 0, err
+	}
+
+	return companyFeeSafe.Uint64(), nil
+}
+
+func (k Keeper) refundEvent(ctx context.Context, msg types.Validator) (uint64, error) {
+	allUsers, _, totalPool, _, err := k.GetParticipantsByEvent(ctx, msg.EventId, msg.Answer)
+	if err != nil {
+		return 0, err
+	}
+	if len(allUsers) != 0 && totalPool != 0 {
 		for i := range allUsers {
-			_, err := k.sendMoney(ctx, allUsers[i].Creator, allUsers[i].Amount)
-			if err != nil {
-				return 0, err
+			if allUsers[i].Amount != 0 {
+				_, err := k.sendMoney(ctx, allUsers[i].Creator, allUsers[i].Amount)
+				if err != nil {
+					return 0, err
+				}
 			}
 		}
 	}
@@ -95,27 +104,32 @@ func (k Keeper) refundEvent(ctx context.Context, msg types.Validator) (uint64, e
 }
 
 func (k Keeper) sendMoney(ctx context.Context, address string, amount uint64) (bool, error) {
-	sender, err := sdk.AccAddressFromBech32(address)
-	if err != nil {
-		return false, err
+	if amount == 0 {
+		return true, nil
+	} else {
+		sender, err := sdk.AccAddressFromBech32(address)
+		if err != nil {
+			return false, err
+		}
+
+		coin := sdk.NewCoin(
+			types.BetToken,
+			math.NewIntFromUint64(amount),
+		)
+
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(
+			ctx,
+			types.ModuleName,
+			sender,
+			sdk.NewCoins(coin),
+		)
+		if err != nil {
+			return false, err
+		}
+
+		return true, nil
 	}
 
-	coin := sdk.NewCoin(
-		types.BetToken,
-		math.NewIntFromUint64(amount),
-	)
-
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx,
-		types.ModuleName,
-		sender,
-		sdk.NewCoins(coin),
-	)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 func (k Keeper) AppendValidator(
