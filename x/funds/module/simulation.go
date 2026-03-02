@@ -74,6 +74,21 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgBurnToEvm,
 		fundssimulation.SimulateMsgBurnToEvm(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
 	))
+	const (
+		opWeightMsgSetCompanyPercent          = "op_weight_msg_funds"
+		defaultWeightMsgSetCompanyPercent int = 100
+	)
+
+	var weightMsgSetCompanyPercent int
+	simState.AppParams.GetOrGenerate(opWeightMsgSetCompanyPercent, &weightMsgSetCompanyPercent, nil,
+		func(_ *rand.Rand) {
+			weightMsgSetCompanyPercent = defaultWeightMsgSetCompanyPercent
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSetCompanyPercent,
+		fundssimulation.SimulateMsgSetCompanyPercent(am.authKeeper, am.bankKeeper, am.keeper, simState.TxConfig),
+	))
 
 	return operations
 }

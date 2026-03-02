@@ -7,6 +7,9 @@ import (
 )
 
 func RegisterInterfaces(registrar codectypes.InterfaceRegistry) {
+	registrar.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSetCompanyPercent{},
+	)
 
 	registrar.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgBurnToEvm{},

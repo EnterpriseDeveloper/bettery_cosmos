@@ -46,6 +46,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a burn-to-evm tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "evm_chain_id"}, {ProtoField: "evm_bridge"}, {ProtoField: "evm_token"}, {ProtoField: "evm_recipient"}, {ProtoField: "amount"}},
 				},
+				{
+					RpcMethod:      "SetCompanyPercent",
+					Use:            "set-company-percent [percent]",
+					Short:          "Send a set-company-percent tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "percent"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

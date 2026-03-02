@@ -61,8 +61,3 @@ func ValidatorKey(id uint64) []byte {
 	binary.BigEndian.PutUint64(bz, id)
 	return append(ValidatorKeyPrefix, bz...)
 }
-
-var (
-	CompanyPercent = 10
-	CompanyAddress = "bettery1se3ugp5026ty89mxrd2gra7ptyfcge0srvjmme" // TODO add functionality to change company address
-)

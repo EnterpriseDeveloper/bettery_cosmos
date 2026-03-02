@@ -20,7 +20,11 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 	}
 	if totalPool != 0 {
 		if len(winUsers) == 0 && totalPool > 0 {
-			_, err := k.sendMoney(ctx, types.CompanyAddress, totalPool)
+			companyAddress, err := k.guardKeeper.GetOwner(ctx)
+			if err != nil {
+				return 0, err
+			}
+			_, err = k.sendMoney(ctx, companyAddress.String(), totalPool)
 			if err != nil {
 				return 0, err
 			}
@@ -49,10 +53,20 @@ func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64
 func (k Keeper) letsPayWinners(ctx context.Context, data types.Validator, totalPool uint64, winnerPool uint64, winUsers []types.Participant) (uint64, error) {
 	totalPoolSafe := sdkmath.NewIntFromUint64(totalPool)
 	winnerPoolSafe := sdkmath.NewIntFromUint64(winnerPool)
-	CompanyPercentSafe := sdkmath.NewIntFromUint64(uint64(types.CompanyPercent))
+
+	companyPercent, err := k.fundsKeeper.GetCompanyPercent(ctx)
+	if err != nil {
+		return 0, err
+	}
+	CompanyPercentSafe := sdkmath.NewIntFromUint64(companyPercent)
 
 	companyFeeSafe := totalPoolSafe.Mul(CompanyPercentSafe).Quo(sdkmath.NewInt(100))
-	_, err := k.sendMoney(ctx, types.CompanyAddress, companyFeeSafe.Uint64())
+
+	companyAddress, err := k.guardKeeper.GetOwner(ctx)
+	if err != nil {
+		return 0, err
+	}
+	_, err = k.sendMoney(ctx, companyAddress.String(), companyFeeSafe.Uint64())
 	if err != nil {
 		return 0, err
 	}

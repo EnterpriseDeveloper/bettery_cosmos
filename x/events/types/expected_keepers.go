@@ -37,4 +37,9 @@ type ParamSubspace interface {
 
 type GuardKeeper interface {
 	IsOwner(ctx context.Context, addr sdk.AccAddress) (bool, error)
+	GetOwner(ctx context.Context) (sdk.AccAddress, error)
+}
+
+type FundsKeeper interface {
+	GetCompanyPercent(ctx context.Context) (uint64, error)
 }
