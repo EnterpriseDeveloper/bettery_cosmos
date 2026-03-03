@@ -71,14 +71,15 @@ func (k msgServer) ValidateEvent(ctx context.Context, msg *types.MsgValidateEven
 	}
 
 	var companyFee uint64 = 0
+	var id uint64 = 0
 
 	if msg.Answers == types.RefundEvent {
-		companyFee, err = k.refundEvent(ctx, validate)
+		id, companyFee, err = k.refundEvent(ctx, validate)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to refund event: %s, event id: %d", err.Error(), msg.EventId))
 		}
 	} else {
-		companyFee, err = k.validateEvent(ctx, validate)
+		id, companyFee, err = k.validateEvent(ctx, validate)
 		if err != nil {
 			return nil, status.Error(codes.Internal, fmt.Sprintf("failed to validate event: %s, event id: %d", err.Error(), msg.EventId))
 		}
@@ -86,7 +87,8 @@ func (k msgServer) ValidateEvent(ctx context.Context, msg *types.MsgValidateEven
 
 	sdkCtx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			"participate_event",
+			"VALIDATE_EVENT",
+			sdk.NewAttribute("id", fmt.Sprint(id)),
 			sdk.NewAttribute("creator", msg.Creator),
 			sdk.NewAttribute("eventId", fmt.Sprintf("%d", validate.EventId)),
 			sdk.NewAttribute("answer", validate.Answer),

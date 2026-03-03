@@ -81,7 +81,7 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	sdkCtx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			"burn_to_evm",
+			"BURN_TO_EVM",
 			sdk.NewAttribute("chain_id", fmt.Sprint(msg.EvmChainId)),
 			sdk.NewAttribute("bridge", msg.EvmBridge),
 			sdk.NewAttribute("token", msg.EvmToken),

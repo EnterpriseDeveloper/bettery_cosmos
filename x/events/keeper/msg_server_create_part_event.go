@@ -69,9 +69,9 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		amount,
 	)
 
-	if coin.Amount.Int64() >= 0 {
-		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
-	}
+	// if coin.Amount.Int64() >= 0 {
+	// 	return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("amount must be positive, got: %s", coin.String()))
+	// }
 
 	sender, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -105,7 +105,7 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 		CreatedAt: uint64(timeNow),
 	}
 
-	_, err = k.AppendParticipant(
+	id, err := k.AppendParticipant(
 		ctx,
 		partEvents,
 	)
@@ -116,7 +116,8 @@ func (k msgServer) CreatePartEvent(ctx context.Context, msg *types.MsgCreatePart
 
 	sdkCtx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			"participate_event",
+			"PARTICIPATE_EVENT",
+			sdk.NewAttribute("id", fmt.Sprint(id)),
 			sdk.NewAttribute("creator", partEvents.Creator),
 			sdk.NewAttribute("eventId", fmt.Sprintf("%d", partEvents.EventId)),
 			sdk.NewAttribute("answer", partEvents.Answer),

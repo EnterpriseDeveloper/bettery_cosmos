@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"bettery/x/events/types"
@@ -46,16 +47,21 @@ func (k msgServer) CreateEvent(ctx context.Context, msg *types.MsgCreateEvent) (
 		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("failed to append event: %v", err))
 	}
 
+	answersBytes, _ := json.Marshal(createEvent.Answers)
+	answersPoolBytes, _ := json.Marshal(createEvent.AnswersPool)
+
 	sdkCtx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			"create_event",
+			"CREATE_EVENT",
+			sdk.NewAttribute("id", fmt.Sprint(id)),
 			sdk.NewAttribute("creator", createEvent.Creator),
 			sdk.NewAttribute("question", createEvent.Question),
-			sdk.NewAttribute("answers", fmt.Sprintf("%d", createEvent.Answers)),
+			sdk.NewAttribute("answers", string(answersBytes)),
 			sdk.NewAttribute("startTime", fmt.Sprintf("%d", createEvent.StartTime)),
 			sdk.NewAttribute("endTime", fmt.Sprintf("%d", createEvent.EndTime)),
 			sdk.NewAttribute("category", createEvent.Category),
 			sdk.NewAttribute("status", createEvent.Status),
+			sdk.NewAttribute("answersPool", string(answersPoolBytes)),
 			sdk.NewAttribute("roomId", createEvent.RoomId),
 		),
 	)
