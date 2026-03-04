@@ -94,7 +94,7 @@ func (k msgServer) ValidateEvent(ctx context.Context, msg *types.MsgValidateEven
 			sdk.NewAttribute("answer", validate.Answer),
 			sdk.NewAttribute("source", validate.Source),
 			sdk.NewAttribute("createdAt", fmt.Sprintf("%d", validate.CreatedAt)),
-			sdk.NewAttribute("refunded", msg.Answers),
+			sdk.NewAttribute("refunded", fmt.Sprint(msg.Answers == types.RefundEvent)),
 			sdk.NewAttribute("companyFee", fmt.Sprintf("%d", companyFee)),
 		),
 	)
