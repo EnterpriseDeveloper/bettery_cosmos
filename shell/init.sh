@@ -22,13 +22,12 @@ done
 
 # FOR HISTORY EVENTS INDEXER
 for i in 0 1 2 3 4; do
-  sed -i 's/pruning = "default"/pruning = "nothing"/' /node$i/config/app.toml
-done
-
-# FOR HISTORY EVENTS INDEXER
-for i in 0 1 2 3 4; do
+  sed -i 's/pruning = "default"/pruning = "custom"/' /node$i/config/app.toml
+  sed -i 's/pruning-interval = "0"/pruning-interval = "100"/' /node$i/config/app.toml
+  sed -i 's/pruning-keep-recent = "0"/pruning-keep-recent = "10"/' /node$i/config/app.toml
   sed -i 's/index-events = \[\]/index-events = ["*"]/' /node$i/config/app.toml
 done
+
 
 # 2. Create keys + add balances to NODE0 genesis
 for i in 0 1 2 3 4; do
