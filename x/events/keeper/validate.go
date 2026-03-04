@@ -13,44 +13,40 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64, uint64, uint64, error) {
+func (k Keeper) validateEvent(ctx context.Context, data types.Validator) (uint64, uint64, error) {
 	_, winUsers, totalPool, winnerPool, err := k.GetParticipantsByEventWithIndex(ctx, data.EventId, data.Answer)
 	if err != nil {
-		return 0, 0, 0, err
+		return 0, 0, err
 	}
 	if totalPool != 0 {
 		if len(winUsers) == 0 && totalPool > 0 {
 			companyAddress, err := k.guardKeeper.GetOwner(ctx)
 			if err != nil {
-				return 0, 0, 0, err
+				return 0, 0, err
 			}
 			_, err = k.sendMoney(ctx, companyAddress.String(), totalPool)
 			if err != nil {
-				return 0, 0, 0, err
+				return 0, 0, err
 			}
 			companyAmount := strconv.FormatUint(totalPool, 10)
 			id, err := k.AppendValidator(ctx, data, companyAmount, false)
 			if err != nil {
-				return 0, 0, 0, err
+				return 0, 0, err
 			}
-			return id, totalPool, totalPool, nil
+			return id, totalPool, nil
 		} else if len(winUsers) != 0 && totalPool > 0 {
-			id, companyFeeSafe, err := k.letsPayWinners(ctx, data, totalPool, winnerPool, winUsers)
-			if err != nil {
-				return 0, 0, 0, err
-			}
-			return id, totalPool, companyFeeSafe, nil
+			return k.letsPayWinners(ctx, data, totalPool, winnerPool, winUsers)
 		} else {
 			fmt.Println("------------NO CONDITION---------") // TODO CHECK WITH TEST
-			return 0, 0, 0, nil
+			return 0, 0, nil
 		}
 
 	} else {
 		id, err := k.AppendValidator(ctx, data, "0", false)
 		if err != nil {
-			return 0, 0, 0, err
+			return 0, 0, err
 		}
-		return id, 0, 0, nil
+		return id, 0, nil
 	}
 }
 
