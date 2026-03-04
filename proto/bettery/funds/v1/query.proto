@@ -21,6 +21,11 @@ service Query {
   rpc GetPercent(QueryGetPercentRequest) returns (QueryGetPercentResponse) {
     option (google.api.http).get = "/bettery/funds/v1/get_percent";
   }
+
+  // GetCreatorPercent Queries a list of GetCreatorPercent items.
+  rpc GetCreatorPercent(QueryGetCreatorPercentRequest) returns (QueryGetCreatorPercentResponse) {
+    option (google.api.http).get = "/bettery/funds/v1/get_creator_percent";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -40,5 +45,13 @@ message QueryGetPercentRequest {}
 
 // QueryGetPercentResponse defines the QueryGetPercentResponse message.
 message QueryGetPercentResponse {
+  uint64 percent = 1;
+}
+
+// QueryGetCreatorPercentRequest defines the QueryGetCreatorPercentRequest message.
+message QueryGetCreatorPercentRequest {}
+
+// QueryGetCreatorPercentResponse defines the QueryGetCreatorPercentResponse message.
+message QueryGetCreatorPercentResponse {
   uint64 percent = 1;
 }

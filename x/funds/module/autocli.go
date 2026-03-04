@@ -24,6 +24,13 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
 				},
 
+				{
+					RpcMethod:      "GetCreatorPercent",
+					Use:            "get-creator-percent ",
+					Short:          "Query getCreatorPercent",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
+				},
+
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
@@ -57,6 +64,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod:      "SetCompanyPercent",
 					Use:            "set-company-percent [percent]",
 					Short:          "Send a set-company-percent tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "percent"}},
+				},
+				{
+					RpcMethod:      "SetCreatorPercent",
+					Use:            "set-creator-percent [percent]",
+					Short:          "Send a set-creator-percent tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "percent"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx

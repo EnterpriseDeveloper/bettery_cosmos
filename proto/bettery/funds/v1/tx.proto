@@ -30,6 +30,9 @@ service Msg {
 
   // SetCompanyPercent defines the SetCompanyPercent RPC.
   rpc SetCompanyPercent(MsgSetCompanyPercent) returns (MsgSetCompanyPercentResponse);
+
+  // SetCreatorPercent defines the SetCreatorPercent RPC.
+  rpc SetCreatorPercent(MsgSetCreatorPercent) returns (MsgSetCreatorPercentResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -113,3 +116,13 @@ message MsgSetCompanyPercent {
 
 // MsgSetCompanyPercentResponse defines the MsgSetCompanyPercentResponse message.
 message MsgSetCompanyPercentResponse {}
+
+// MsgSetCreatorPercent defines the MsgSetCreatorPercent message.
+message MsgSetCreatorPercent {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 percent = 2;
+}
+
+// MsgSetCreatorPercentResponse defines the MsgSetCreatorPercentResponse message.
+message MsgSetCreatorPercentResponse {}
