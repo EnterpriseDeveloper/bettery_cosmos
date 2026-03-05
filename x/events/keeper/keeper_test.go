@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"context"
 	"testing"
+	"time"
 
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/store/types"
@@ -19,7 +19,7 @@ import (
 )
 
 type fixture struct {
-	ctx          context.Context
+	ctx          sdk.Context
 	keeper       keeper.Keeper
 	addressCodec address.Codec
 }
@@ -33,6 +33,9 @@ func initFixture(t *testing.T) *fixture {
 
 	storeService := runtime.NewKVStoreService(storeKey)
 	ctx := testutil.DefaultContextWithDB(t, storeKey, storetypes.NewTransientStoreKey("transient_test")).Ctx
+	// Force a deterministic block time so tests that rely on BlockTime
+	// (e.g. CreateEvent start/end time checks) behave predictably.
+	ctx = ctx.WithBlockTime(time.Unix(0, 0))
 
 	authority := authtypes.NewModuleAddress(types.GovModuleName)
 
