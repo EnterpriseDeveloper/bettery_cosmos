@@ -8,9 +8,6 @@ services:
       - shared-genesis:/shared
       - node0-data:/node0
       - node1-data:/node1
-      - node2-data:/node2
-      - node3-data:/node3
-      - node4-data:/node4
     environment:
       - CHAIN_ID=bettery1
     entrypoint: ["/bin/sh"]
@@ -34,7 +31,7 @@ services:
       - shared-genesis:/shared:Z
       - node0-data:/data:Z
     environment:
-      - CHAIN_ID=bettery1
+      - CHAIN_ID=bettery
       - DAEMON_HOME=/data
       - DAEMON_NAME=betteryd
       - DAEMON_RESTART_AFTER_UPGRADE=true
@@ -53,74 +50,44 @@ services:
       - shared-genesis:/shared:Z
       - node1-data:/data:Z
     environment:
-      - CHAIN_ID=bettery1
+      - CHAIN_ID=bettery
       - DAEMON_HOME=/data
       - DAEMON_NAME=betteryd
       - DAEMON_RESTART_AFTER_UPGRADE=true
     entrypoint: ["/bin/sh", "-c"]
     command: ["/usr/local/bin/runNode.sh"]
 
-  betterynode2:
-    container_name: betterynode2
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    depends_on:
-      init:
-        condition: service_completed_successfully
-    volumes:
-      - shared-genesis:/shared:Z
-      - node2-data:/data:Z
+  postgres:
+    image: postgres:16
+    container_name: indexer_postgres
+    restart: always
     environment:
-      - CHAIN_ID=bettery1
-      - DAEMON_HOME=/data
-      - DAEMON_NAME=betteryd
-      - DAEMON_RESTART_AFTER_UPGRADE=true
-    entrypoint: ["/bin/sh", "-c"]
-    command: ["/usr/local/bin/runNode.sh"]
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: indexer
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  betterynode3:
-    container_name: betterynode3
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+  indexer:
+    build: /Users/voroshilovmax/Development/betme/indexer_server/
+    container_name: indexer_server
     depends_on:
-      init:
-        condition: service_completed_successfully
-    volumes:
-      - shared-genesis:/shared:Z
-      - node3-data:/data:Z
-    environment:
-      - CHAIN_ID=bettery1
-      - DAEMON_HOME=/data
-      - DAEMON_NAME=betteryd
-      - DAEMON_RESTART_AFTER_UPGRADE=true
-    entrypoint: ["/bin/sh", "-c"]
-    command: ["/usr/local/bin/runNode.sh"]
-
-  betterynode4:
-    container_name: betterynode4
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    depends_on:
-      init:
-        condition: service_completed_successfully
-    volumes:
-      - shared-genesis:/shared:Z
-      - node4-data:/data:Z
-    environment:
-      - CHAIN_ID=bettery1
-      - DAEMON_HOME=/data
-      - DAEMON_NAME=betteryd
-      - DAEMON_RESTART_AFTER_UPGRADE=true
-    entrypoint: ["/bin/sh", "-c"]
-    command: ["/usr/local/bin/runNode.sh"]
+      postgres:
+        condition: service_healthy
+    env_file:
+      - /Users/voroshilovmax/Development/betme/indexer_server/.env
+    ports:
+      - "2020:2020"  
 
 volumes:
   shared-genesis:
   node0-data:
   node1-data:
-  node2-data:
-  node3-data:
-  node4-data:
+  postgres_data:

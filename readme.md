@@ -11,6 +11,13 @@ ignite chain serve
 ```
 cd proto \ sudo buf generate --template buf.gen.ts.yaml - gen proto ts
 cd proto \ sudo buf generate --template buf.gen.py.yaml - gen proto py
+
+docker exec -it betterynode0 sh
+betteryd keys add front --keyring-backend file
+
+betteryd keys show faucet -a --home /data --keyring-backend test
+
+betteryd tx bank send faucet bettery1670typeqycscqxnqqyc7yld0yfzgr86qe779q6 1ubet --chain-id bettery --home /data --keyring-backend test --gas auto --yes
 ```
 
 `serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
