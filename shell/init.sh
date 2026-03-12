@@ -64,6 +64,8 @@ NODE_ID=$(cat /shared/nodeID)
 # FOR HISTORY EVENTS INDEXER
 for i in 0 1; do
   sed -i 's|laddr = "tcp://127.0.0.1:26657"|laddr = "tcp://0.0.0.0:26657"|' /node$i/config/config.toml
+  sed -i 's|enabled = false|enabled = true|' /node$i/config/app.toml
+  sed -i '/\[grpc\]/,/^\[/ s|address = ".*"|address = "0.0.0.0:9090"|' /node$i/config/app.toml
   sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = ["*"]/' /node$i/config/config.toml # TODO: ADD ORIGIN FOR FRONTEND
   sed -i 's/cors_allowed_methods = \[\]/cors_allowed_methods = ["HEAD","GET","POST"]/' /node$i/config/config.toml
   sed -i 's/cors_allowed_headers = \[\]/cors_allowed_headers = ["Origin","Accept","Content-Type","X-Requested-With"]/' /node$i/config/config.toml
