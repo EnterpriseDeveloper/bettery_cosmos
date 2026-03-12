@@ -37,6 +37,11 @@ services:
       - DAEMON_RESTART_AFTER_UPGRADE=true
     entrypoint: ["/bin/sh", "-c"]
     command: [/usr/local/bin/runFirstNode.sh ]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:26657/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   betterynode1:
     container_name: betterynode1
@@ -81,10 +86,23 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      betterynode0:
+        condition: service_healthy    
     env_file:
       - /Users/voroshilovmax/Development/betme/indexer_server/.env
     ports:
       - "2020:2020"  
+
+  bridge:
+    build: /Users/voroshilovmax/Development/betme/bridge_server/  
+    container_name: bridge_server
+    ports:
+      - "8080:8080"
+    env_file:
+      - /Users/voroshilovmax/Development/betme/bridge_server/.env
+    depends_on:
+      betterynode0:
+        condition: service_healthy  
 
 volumes:
   shared-genesis:
