@@ -60,10 +60,31 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 		return nil, errorsmod.Wrap(err, "SendCoinsFromAccountToModule")
 	}
 
+	oneUSD := sdk.NewCoin(
+		types.BetToken,
+		sdkmath.NewIntFromUint64(types.OneUSD),
+	)
+
+	owner, err := k.guardKeeper.GetOwner(ctx)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "GetOwner")
+	}
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(
+		ctx,
+		types.ModuleName,
+		owner,
+		sdk.NewCoins(oneUSD),
+	)
+	if err != nil {
+		return nil, errorsmod.Wrap(err, "SendCoinsFromModuleToAccount")
+	}
+
+	burnAmount := coin.Amount.Sub(oneUSD.Amount)
 	err = k.bankKeeper.BurnCoins(
 		ctx,
 		types.ModuleName,
-		sdk.NewCoins(coin),
+		sdk.NewCoins(sdk.NewCoin(types.BetToken, burnAmount)),
 	)
 	if err != nil {
 		return nil, errorsmod.Wrap(err, "Burn tokens")
@@ -71,7 +92,7 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 
 	diff := uint8(12)
 	divisor := pow10(diff)
-	normalizedAmount := coin.Amount.Mul(divisor)
+	normalizedAmount := burnAmount.Mul(divisor)
 
 	nonce, err := k.GetNextBurnNonce(ctx, msg.EvmChainId)
 	if err != nil {
@@ -86,7 +107,9 @@ func (k msgServer) BurnToEvm(ctx context.Context, msg *types.MsgBurnToEvm) (*typ
 			sdk.NewAttribute("bridge", msg.EvmBridge),
 			sdk.NewAttribute("token", msg.EvmToken),
 			sdk.NewAttribute("recipient", msg.EvmRecipient),
-			sdk.NewAttribute("amount", normalizedAmount.String()),
+			sdk.NewAttribute("transfer_amount", normalizedAmount.String()),
+			sdk.NewAttribute("company_amount", oneUSD.Amount.String()),
+			sdk.NewAttribute("creator_amount", burnAmount.String()),
 			sdk.NewAttribute("nonce", fmt.Sprint(nonce)),
 		),
 	)

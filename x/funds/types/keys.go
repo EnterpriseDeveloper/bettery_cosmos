@@ -20,6 +20,7 @@ const (
 	GovModuleName = "gov"
 	BetToken      = "ubet"
 	Amount        = "10000000000" // TODO !IMPORTANT PASTE 1 IN PROD
+	OneUSD        = 1000000
 )
 
 // ParamsKey is the prefix to retrieve all Params
